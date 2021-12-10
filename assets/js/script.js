@@ -27,7 +27,7 @@ for (let i = 0; i < 20; i++) {
 }
 
 
-// create tetris pieces
+// create tetris shapes
 const iShape = [
     [1, 1, 1, 1]
 ];
@@ -101,16 +101,31 @@ function undrawPiece(piece) {
     }
 }
 
+function movePieceLeft(piece) {
+    undrawPiece(piece);
+    if (piece.col > 0) {
+        piece.col--;
+    }
+    drawPiece(piece);
+}
+
+function movePieceRight(piece) {
+    undrawPiece(piece);
+    if (piece.col + piece.shape.length < 9) {
+        piece.col++;
+    }
+    drawPiece(piece);
+}
 
 drawPiece(currentPiece);
 
-
-
-function removePiece(piece) {
-    
-}
-
-
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowLeft') {
+        movePieceLeft(currentPiece);
+    } else if (event.key === 'ArrowRight') {
+        movePieceRight(currentPiece);
+    }
+});
 
 
 
