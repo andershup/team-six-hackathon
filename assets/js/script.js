@@ -203,6 +203,29 @@ function checkCollision(piece) {
 }
 // drawPiece(currentPiece);
 
+function clearLines() {
+    for (let i = 0; i < 20; i++) {
+        let row = getElement(`row ${i}`);
+        let cells = row.children;
+        let full = true;
+        for (let j = 0; j < 10; j++) {
+            if (!cells[j].classList.contains('taken')) {
+                full = false;
+            }
+        }
+        if (full) {
+            for (let j = 0; j < 10; j++) {
+                cells[j].classList.remove('taken');
+                cells[j].classList.remove('active-piece');
+            }
+            for (let k = i; k > 1; k--) {
+                let prevRow = getElement(`row ${k - 1}`);
+                let prevCells = prevRow.children;
+                row.children = prevCells;
+            }
+        }
+    }
+}
 
 
 
@@ -246,12 +269,11 @@ startButton.addEventListener('click', () => {
                             getElement(`cell ${currentPiece.row + i} ${currentPiece.col + j}`).classList.add('taken');
                         }
                     });
-                })
-                setTimeout(() => {
-                    currentPiece = getNextPiece();
-                }, 300);
+                })                
+                currentPiece = getNextPiece();                
             }
             movePieceDown(currentPiece);
+            clearLines();
         }, 1000); 
     }
 });
