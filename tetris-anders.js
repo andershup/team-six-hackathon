@@ -2,7 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const grid = document.querySelector(".grid")
 let squares = Array.from(document.querySelectorAll(".grid div"))
+let startBtn = document.querySelector("#start-button")
 const rowWidth = 10
+let timer = 0
 
 // the blocks 
 
@@ -64,6 +66,12 @@ const lRightBlock = [
       zBlock,sBlock,oBlock,lRightBlock, lLeftBlock,iBlock,tBlock
   ]
   
+  // add start button functionality
+
+  startBtn.addEventListener('click', () => {
+    timer = setInterval(moveDown, 1000)
+  })
+
 
   //0-3 index numbers of the block arrays
   let currentRotation = 0
@@ -96,13 +104,23 @@ let nextPick = 0
 
     function moveLeft () {
         unDraw()
-        currentPosition --
+        const leftEdge = current.some(index => (currentPosition + index) % rowWidth === 0)
+        if(!leftEdge) {
+            currentPosition -= 1
+        }
+        if(current.some(index => squares[currentPosition + index].classList.contains('block-in-use'))) {
+            currentPosition +=1
+        }
         draw()
     }
  
     function moveRight () {
         unDraw()
-        currentPosition ++
+        const isAtRightEdge = current.some(index => (currentPosition + index) % rowWidth === rowWidth -1)
+        if(!isAtRightEdge) currentPosition +=1
+        if(current.some(index => squares[currentPosition + index].classList.contains('block-in-use'))) {
+          currentPosition -=1
+        }
         draw()
     }
 
@@ -145,7 +163,11 @@ let nextPick = 0
 function keyheldDown (e) {
     if (e.keyCode === 40) {
         moveDown()
-    }
+    // }  else if(e.keyCode === 37) {
+    //     moveLeft()
+    //   } else if (e.keyCode === 39) {
+    //       moveRight()
+      }
 }
 document.addEventListener('keydown', keyheldDown)
 
@@ -161,7 +183,7 @@ function lockBlock () {
         currentPosition = 5
         currentRotation = 0
         draw()
-        updateScore()
+        
     }
     
 
