@@ -63,12 +63,15 @@ const lRightBlock = [
       zBlock,sBlock,oBlock,lRightBlock, lLeftBlock,iBlock,tBlock
   ]
   
-
+// Set where on the grid the blocks should start
   let startingIndex = 5;
+  //0-3 index numbers of the block arrays
   let currentRotation = 0
+  let currentPosition = 5
 
-  console.log(currentRotation)
+  
   let randomPick = Math.floor(Math.random() * allBlockArrays.length)
+
   let nextPick = Math.floor(Math.random() * allBlockArrays.length)
   
   let current = allBlockArrays[randomPick][currentRotation]
@@ -77,11 +80,75 @@ const lRightBlock = [
 
   function draw () {
       current.forEach(index => {
-          squares[index].classList.add("block")
+          squares[currentPosition + index].classList.add("block")
       }) 
     }
+
+
+    // delete the blocks
+
+    function unDraw () {
+      current.forEach(index => {
+          squares[currentPosition + index].classList.remove("block")
+      }) 
+    }
+
+    function moveLeft () {
+        unDraw()
+        currentPosition --
+        draw()
+    }
+ 
+    function moveRight () {
+        unDraw()
+        currentPosition ++
+        draw()
+    }
+
+    function moveDown () {
+        unDraw()
+        currentPosition += rowWidth
+        draw()
+
+    }
+
+    function rotate() {
+        unDraw()
+        currentRotation ++
+        if(currentRotation === 3) {
+            currentRotation = 0
+        }
+        current = allBlockArrays[randomPick][currentRotation]
+        draw()
+    }
+
+
+
+// Set up user input
+  function userInput(e) {
+    if(e.keyCode === 37) {
+      moveLeft()
+    } else if (e.keyCode === 39) {
+        moveRight()
+    } else if (e.keyCode === 40) {
+        moveDown()
+    } else if (e.keyCode === 38) {
+      rotate()
+    }
+  }
+  document.addEventListener('keyup', userInput)
    
-   draw() 
+function inputHeldDown(e) {
+    if(e.key === 40) {
+        moveDown()
+    }
+}
+document.addEventListener('keydown', inputHeldDown)
+
+
+
+
+    
 
 
 
