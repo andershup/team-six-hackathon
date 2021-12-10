@@ -59,17 +59,6 @@ const sShape = [
 ];
 const shapes = [iShape, oShape, tShape, lShape, jShape, zShape, sShape];
 
-// function rotatePiece(piece) {
-//     const newPiece = [];
-//     for (let i = 0; i < piece[0].length; i++) {
-//         const row = [];
-//         for (let j = 0; j < piece.length; j++) {
-//             row.push(piece[j][i]);
-//         }
-//         newPiece.push(row);
-//     }
-//     return newPiece;
-// }
 
 function getRandomShape() {
     return shapes[Math.floor(Math.random() * shapes.length)];
@@ -115,32 +104,11 @@ function undrawPiece(piece) {
 
 drawPiece(currentPiece);
 
-// function placePiece(piece, row, col) {
-//     for (let i = 0; i < piece.length; i++) {
-//         for (let j = 0; j < piece[i].length; j++) {
-//             if (piece[i][j] === 1) {
-//                 getElement(`cell ${row + i} ${col + j}`).classList.add('active-piece');
-//             }
-//         }
-//     }
-// }
+
 
 function removePiece(piece) {
     
 }
-
-
-// function movePieceLeft() {
-
-// }
-
-// let currentPiece = getRandomPiece();
-// let anotherPiece = getRandomPiece();
-
-// placePiece(currentPiece, 0, 0);
-// placePiece(anotherPiece, 0, 4);
-
-
 
 
 
@@ -156,7 +124,6 @@ let gameOver = false;
 let gamePaused = false;
 let gameStarted = false;
 let gameInterval;
-// let currentPiece;
 // TETRIS
 
 startButton.addEventListener('click', () => {
@@ -165,7 +132,3 @@ startButton.addEventListener('click', () => {
         console.log('game started', gameStarted);
     } 
 });
-
-while (!gameOver && gameStarted) {
-
-}
