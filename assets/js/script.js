@@ -53,3 +53,9 @@ const sPiece = [
     [0, 1, 1],
     [1, 1, 0]
 ];
+const pieces = [iPiece, oPiece, tPiece, lPiece, jPiece, zPiece, sPiece];
+
+// Buttons 
+const startButton = getElement('start');
+const pauseButton = getElement('pause');
+const resetButton = getElement('reset');
