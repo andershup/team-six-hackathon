@@ -69,7 +69,8 @@ function getNextPiece() {
     return {
         shape: getRandomShape(),
         row: 0,
-        col: 3
+        col: 3,
+        placed: false
     }
 }
 
@@ -147,6 +148,24 @@ function rotatePiece(piece) {
     drawPiece(piece);
 }
 
+function checkCollision(piece) {
+    row = piece.row;
+    col = piece.col;
+    shape = piece.shape;
+    width = piece.shape[0].length;
+    height = piece.shape.length;
+    if (row + height >= 20) {
+        return true;
+    } else {
+        for (let i = 0; i < width; i++) {
+            if (shape[height - 1][i] === 1) {
+                return getElement(`cell ${row + height} ${col + i}`).classList.contains('active-piece');
+            }
+        }
+    }
+    return false;
+}
+
 drawPiece(currentPiece);
 
 document.addEventListener('keydown', function (event) {
@@ -158,6 +177,7 @@ document.addEventListener('keydown', function (event) {
         rotatePiece(currentPiece);
     } else if (event.key === 'ArrowDown') {
         movePieceDown(currentPiece);
+        console.log(checkCollision(currentPiece));
     }
 });
 
