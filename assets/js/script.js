@@ -74,7 +74,7 @@ function getNextPiece() {
     }
 }
 
-let currentPiece = getNextPiece();
+// let currentPiece = getNextPiece();
 
 function drawPiece(piece) {
     row = piece.row;
@@ -104,7 +104,7 @@ function undrawPiece(piece) {
 
 function movePieceLeft(piece) {
     undrawPiece(piece);
-    if (piece.col > 0) {
+    if (piece.col > 0 && isVacantLeft(piece)) {
         piece.col--;
     }
     drawPiece(piece);
@@ -112,7 +112,7 @@ function movePieceLeft(piece) {
 
 function movePieceRight(piece) {
     undrawPiece(piece);
-    if (piece.col + piece.shape[0].length <= 9) {
+    if (piece.col + piece.shape[0].length <= 9 && isVacantRight(piece)) {
         piece.col++;
     }
     drawPiece(piece);
@@ -120,7 +120,7 @@ function movePieceRight(piece) {
 
 function movePieceDown(piece) {
     undrawPiece(piece);
-    if (piece.row + piece.shape.length < 20) {
+    if (piece.row + piece.shape.length < 20 && !checkCollision(piece)) {
         piece.row++;
     }
     drawPiece(piece);
@@ -147,39 +147,63 @@ function rotatePiece(piece) {
     }
     drawPiece(piece);
 }
+function isVacantLeft(piece) {
+    col = piece.col;
+    shape = piece.shape;
+    height = piece.shape.length;
+    for (let i = 0; i <= height; i++) {
+        if (col > 0) {
+            if (getElement(`cell ${piece.row + i} ${col - 1}`).classList.contains('taken')) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
+function isVacantRight(piece) {
+    width = piece.shape[0].length;
+    col = piece.col + width - 1;
+    height = piece.shape.length;
+    for (let i = 0; i <= height; i++) {
+      if (col < 9) {
+        if (
+          getElement(`cell ${piece.row + i} ${col + 1}`).classList.contains(
+            "taken"
+          )
+        ) {
+          return false;
+        }
+      }
+    }
+    return true;
+}
+    
 function checkCollision(piece) {
     row = piece.row;
     col = piece.col;
     shape = piece.shape;
     width = piece.shape[0].length;
     height = piece.shape.length;
+    // pieceCells = [];
     if (row + height >= 20) {
         return true;
     } else {
-        for (let i = 0; i < width; i++) {
-            if (shape[height - 1][i] === 1) {
-                return getElement(`cell ${row + height} ${col + i}`).classList.contains('active-piece');
+        for (let i = 0; i < height; i++) {
+            for (let j = 0; j < width; j++) {
+                if (shape[i][j] === 1) {
+                    if (getElement(`cell ${row + i + 1} ${col + j}`).classList.contains('taken')) {
+                        return true;
+                    }
+                }
             }
         }
     }
     return false;
 }
+// drawPiece(currentPiece);
 
-drawPiece(currentPiece);
 
-document.addEventListener('keydown', function (event) {
-    if (event.key === 'ArrowLeft') {
-        movePieceLeft(currentPiece);
-    } else if (event.key === 'ArrowRight') {
-        movePieceRight(currentPiece);
-    } else if (event.key === 'ArrowUp') {
-        rotatePiece(currentPiece);
-    } else if (event.key === 'ArrowDown') {
-        movePieceDown(currentPiece);
-        console.log(checkCollision(currentPiece));
-    }
-});
 
 
 
@@ -198,6 +222,36 @@ let gameInterval;
 startButton.addEventListener('click', () => {
     if (!gameStarted) {
         gameStarted = true;
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowLeft") {
+            movePieceLeft(currentPiece);
+          } else if (event.key === "ArrowRight") {
+            movePieceRight(currentPiece);
+          } else if (event.key === "ArrowUp") {
+            rotatePiece(currentPiece);
+          } else if (event.key === "ArrowDown") {
+            movePieceDown(currentPiece);
+            // console.log(checkCollision(currentPiece));
+          }
+        });
         console.log('game started', gameStarted);
-    } 
+        let currentPiece = getNextPiece();
+        drawPiece(currentPiece);
+        gameInterval = setInterval(() => {
+            if (checkCollision(currentPiece)) {
+                // currentPiece.placed = true;
+                currentPiece.shape.forEach((row, i) => {
+                    row.forEach((cell, j) => {
+                        if (cell === 1) {
+                            getElement(`cell ${currentPiece.row + i} ${currentPiece.col + j}`).classList.add('taken');
+                        }
+                    });
+                })
+                setTimeout(() => {
+                    currentPiece = getNextPiece();
+                }, 300);
+            }
+            movePieceDown(currentPiece);
+        }, 1000); 
+    }
 });
