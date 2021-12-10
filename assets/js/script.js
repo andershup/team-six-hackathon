@@ -117,6 +117,14 @@ function movePieceRight(piece) {
     drawPiece(piece);
 }
 
+function movePieceDown(piece) {
+    undrawPiece(piece);
+    if (piece.row + piece.shape.length < 20) {
+        piece.row++;
+    }
+    drawPiece(piece);
+}
+
 
 function rotatePiece(piece) {
     undrawPiece(piece);
@@ -133,6 +141,9 @@ function rotatePiece(piece) {
     if (piece.col + piece.shape[0].length > 9) {
         piece.col--;
     }
+    if (piece.row + piece.shape.length > 20) {
+        piece.row--;
+    }
     drawPiece(piece);
 }
 
@@ -145,6 +156,8 @@ document.addEventListener('keydown', function (event) {
         movePieceRight(currentPiece);
     } else if (event.key === 'ArrowUp') {
         rotatePiece(currentPiece);
+    } else if (event.key === 'ArrowDown') {
+        movePieceDown(currentPiece);
     }
 });
 
