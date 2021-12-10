@@ -111,8 +111,27 @@ function movePieceLeft(piece) {
 
 function movePieceRight(piece) {
     undrawPiece(piece);
-    if (piece.col + piece.shape.length < 9) {
+    if (piece.col + piece.shape[0].length <= 9) {
         piece.col++;
+    }
+    drawPiece(piece);
+}
+
+
+function rotatePiece(piece) {
+    undrawPiece(piece);
+    let width = piece.shape[0].length;
+    let height = piece.shape.length;
+    let temp = [];
+    for (let i = 0; i < width; i++) {
+        temp[i] = [];
+        for (let j = 0; j < height; j++) {
+            temp[i][j] = piece.shape[height - 1 - j][i];
+        }
+    }
+    piece.shape = temp;
+    if (piece.col + piece.shape[0].length > 9) {
+        piece.col--;
     }
     drawPiece(piece);
 }
@@ -124,6 +143,8 @@ document.addEventListener('keydown', function (event) {
         movePieceLeft(currentPiece);
     } else if (event.key === 'ArrowRight') {
         movePieceRight(currentPiece);
+    } else if (event.key === 'ArrowUp') {
+        rotatePiece(currentPiece);
     }
 });
 
