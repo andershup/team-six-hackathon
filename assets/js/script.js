@@ -59,3 +59,11 @@ const pieces = [iPiece, oPiece, tPiece, lPiece, jPiece, zPiece, sPiece];
 const startButton = getElement('start');
 const pauseButton = getElement('pause');
 const resetButton = getElement('reset');
+
+// Game functions
+let gameOver = false;
+let gamePaused = false;
+let gameStarted = false;
+let gameInterval;
+let currentPiece;
+// TETRIS
