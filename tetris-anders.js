@@ -18,7 +18,8 @@ const sBlock = [
     [1,2,rowWidth,rowWidth+1],
     [0,rowWidth,rowWidth+1,rowWidth*2+1],
     [1,2,rowWidth, rowWidth+1],
-    [1,2,rowWidth,rowWidth+1],
+    [0,rowWidth,rowWidth+1,rowWidth*2+1],
+   
     
     
 ]
@@ -63,16 +64,16 @@ const lRightBlock = [
       zBlock,sBlock,oBlock,lRightBlock, lLeftBlock,iBlock,tBlock
   ]
   
-// Set where on the grid the blocks should start
-  let startingIndex = 5;
+
   //0-3 index numbers of the block arrays
   let currentRotation = 0
+  //Starting and current position of block
   let currentPosition = 5
 
   
   let randomPick = Math.floor(Math.random() * allBlockArrays.length)
-
-  let nextPick = Math.floor(Math.random() * allBlockArrays.length)
+let nextPick = 0
+  
   
   let current = allBlockArrays[randomPick][currentRotation]
 
@@ -109,13 +110,14 @@ const lRightBlock = [
         unDraw()
         currentPosition += rowWidth
         draw()
+        lockBlock()
 
     }
 
     function rotate() {
         unDraw()
         currentRotation ++
-        if(currentRotation === 3) {
+        if(currentRotation === 4) {
             currentRotation = 0
         }
         current = allBlockArrays[randomPick][currentRotation]
@@ -137,17 +139,33 @@ const lRightBlock = [
     }
   }
   document.addEventListener('keyup', userInput)
-   
-function inputHeldDown(e) {
-    if(e.key === 40) {
+ 
+// move the block down faster by holding the downkey
+
+function keyheldDown (e) {
+    if (e.keyCode === 40) {
         moveDown()
     }
 }
-document.addEventListener('keydown', inputHeldDown)
+document.addEventListener('keydown', keyheldDown)
 
 
+function lockBlock () {
+    // Stop the block and set in place when at the bottom or adjacent to another
+    if(current.some(index => squares[currentPosition + index + rowWidth].classList.contains('block-in-use'))) {
+        current.forEach(index => squares[currentPosition + index].classList.add('block-in-use'))
+        //draw a new 
+        randomPick = nextPick
+        nextPick = Math.floor(Math.random() * allBlockArrays.length)
+        current = allBlockArrays[randomPick][currentRotation]
+        currentPosition = 5
+        currentRotation = 0
+        draw()
+        updateScore()
+    }
+    
 
-
+}
     
 
 
