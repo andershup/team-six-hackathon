@@ -6,14 +6,15 @@ function getElements(className) {
     return document.getElementsByClassName(className);
 }
 
-function updateHtml(id, html) {
-    getElement(id).innerHTML = html;
-}
+// function updateHtml(id, html) {
+//     getElement(id).innerHTML = html;
+// }
 
 const grid = getElement('grid');
 const width = 10;
 const height = 20;
-
+const nextPieceGrid = getElement('next-piece');
+const scoreElement = getElement('score');
 // const gridArray = [];
 
 // for (let i = 0; i < height; i++) {
@@ -51,6 +52,18 @@ for (let i = 0; i < height; i++) {
     grid.appendChild(row);
 }
 
+for (let i = 0; i < 5; i++) {
+    const row = document.createElement('div');
+    row.className = 'row-next';
+    row.id = `rowNext-${i}`;
+    for (let j = 0; j < 5; j++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell-next';
+        cell.id = `cellNext-${i}-${j}`;
+        row.appendChild(cell);
+    }
+    nextPieceGrid.appendChild(row);
+}
 
 // create tetris shapes
 const iShape = [
@@ -114,6 +127,19 @@ function drawPiece(piece) {
     }
 }
 
+function drawNextPiece(piece) {
+    let row = piece.row;
+    let col = piece.col;
+    let shape = piece.shape;
+    for (let i = 0; i < shape.length; i++) {
+        for (let j = 0; j < shape[i].length; j++) {
+            if (shape[i][j] === 1) {
+                getElement(`cellNext-${row + i + 1}-${col + j - 2}`).classList.add('active-piece');
+            }
+        }
+    }
+}
+
 function undrawPiece(piece) {
     let row = piece.row;
     let col = piece.col;
@@ -124,6 +150,13 @@ function undrawPiece(piece) {
                 getElement(`cell-${row + i}-${col + j}`).classList.remove('active-piece');
             }
         }
+    }
+}
+
+function undrawNextPiece(piece) {
+    let cells = getElements('cell-next');
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.remove('active-piece');
     }
 }
 
@@ -153,28 +186,33 @@ function movePieceDown(piece) {
 
 
 function rotatePiece(piece) {
-    undrawPiece(piece);
-    let width = piece.shape[0].length;
-    let height = piece.shape.length;
-    let temp = [];
-    for (let i = 0; i < width; i++) {
-        temp[i] = [];
-        for (let j = 0; j < height; j++) {
-            temp[i][j] = piece.shape[height - 1 - j][i];
+    if (piece && !piece.placed) {
+        undrawPiece(piece);
+        let width = piece.shape[0].length;
+        let height = piece.shape.length;
+        let temp = [];
+        for (let i = 0; i < width; i++) {
+            temp[i] = [];
+            for (let j = 0; j < height; j++) {
+                temp[i][j] = piece.shape[height - 1 - j][i];
+            }
         }
+        piece.shape = temp;
+        while (piece.col + piece.shape[0].length > 9 || !isVacantRight(piece)) {
+            piece.col--;
+        }
+        while (piece.col < 0 || !isVacantLeft(piece)) {
+            piece.col++;
+        }
+        while (piece.row + piece.shape.length > 20 || checkCollision(piece)) {
+            piece.row--;
+        }
+        drawPiece(piece);
     }
-    piece.shape = temp;
-    while (piece.col + piece.shape[0].length > 9) {
-        piece.col--;
-    }
-    while (piece.row + piece.shape.length > 20) {
-        piece.row--;
-    }
-    drawPiece(piece);
 }
 
 function isVacantLeft(piece) {
-    if (piece) {
+    if (piece && !piece.placed) {
         let col = piece.col;
         let height = piece.shape.length;
         for (let i = 0; i <= height; i++) {
@@ -190,7 +228,7 @@ function isVacantLeft(piece) {
 }
 
 function isVacantRight(piece) {
-    if (piece) {
+    if (piece && !piece.placed) {
         let width = piece.shape[0].length;
         let col = piece.col + width - 1;
         let height = piece.shape.length;
@@ -274,15 +312,17 @@ function clearLines() {
             grid.insertBefore(row, rows[0]);
         }
     }
-    // if (count > 0) {
-    //     score += (count * 10);
-    //     updateScore();
-    //     lines += count;
-    //     updateLines();
-    // }
+    if (count > 0) {
+        score += (count * 10);
+        updateScore();
+        // lines += count;
+        // updateLines();
+    }
 }
 
-
+function updateScore() {
+    scoreElement.innerHTML = score;
+}
 
 // Buttons 
 const startButton = getElement('start');
@@ -294,6 +334,7 @@ let gameOver = false;
 let gamePaused = false;
 let gameStarted = false;
 let gameInterval;
+let score = 0;
 // TETRIS
 
 
@@ -315,11 +356,15 @@ startButton.addEventListener('click', () => {
         console.log('game started', gameStarted);
         let currentPiece = getNextPiece();
         drawPiece(currentPiece);
+        let nextPiece = getNextPiece();
+        drawNextPiece(nextPiece);
         gameInterval = setInterval(() => {
+            
             restoreIdOrder();
+            
 
             if (checkCollision(currentPiece)) {
-                // currentPiece.placed = true;
+                currentPiece.placed = true;
                 currentPiece.shape.forEach((row, i) => {
                     row.forEach((cell, j) => {
                         if (cell === 1) {
@@ -330,7 +375,10 @@ startButton.addEventListener('click', () => {
                 })
                 clearLines();
                 restoreIdOrder();
-                currentPiece = getNextPiece();            
+                currentPiece = nextPiece;
+                undrawNextPiece(nextPiece);
+                nextPiece = getNextPiece();
+                drawNextPiece(nextPiece);          
             }
             movePieceDown(currentPiece);
         }, 1000); 
