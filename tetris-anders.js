@@ -486,17 +486,31 @@ pauseButton.addEventListener('click', () => {
 function resetScoreSpeed() {
   scoreElement.innerHTML = 0;
   speedElement.innerHTML = 0;
-  //interval need to be reset
+  //interval needs to be reset
 }
+
+// function deleteRows () {
+// let r = document.querySelectorAll('.row')
+// for(i=0; i< r.length ; i ++) {
+//   r.removeChild(r.childnodes[i])
+// }
+// console.log(r)
+
+// console.log(r)
+// console.log(grid.children.length)
+// console.log(nextPieceGrid.children.length)
+// for( i =0 ; i < nextPieceGrid.length; i++) {
+//   nextPieceGrid[i].removeChild(row)
+// }
+// console.log(nextPieceGrid.children.length)
+// }
+// deleteRows()
+
 
 resetButton.addEventListener('click', function(event) {
  
   resetScoreSpeed()
-// Is it not best to tro to remove the child element that were added when you first drew the grid?
-  for(i = 0 ; i < nextPieceGrid.length; i++) {
-    nextPieceGrid.romoveChild(row[i])
-    console.log(grid)
-  }
+// Is it not best to try to remove the child element that were added when you first drew the grid?
 
   // remakeGrid()
   
