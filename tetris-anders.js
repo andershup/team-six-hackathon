@@ -412,34 +412,38 @@ pauseButton.addEventListener('click', () => {
       gameInterval = null
 
     } 
+    else  {
+    
+    }
   }
+})
   
-  else if(gamePaused) {
-    // gameStarted = true;
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "ArrowLeft") {
-        movePieceLeft(currentPiece);
-      } else if (event.key === "ArrowRight") {
-        movePieceRight(currentPiece);
-      } else if (event.key === "ArrowUp") {
-        rotatePiece(currentPiece);
-      } else if (event.key === "ArrowDown") {
-        movePieceDown(currentPiece);
-        // console.log(checkCollision(currentPiece));
-      }
+  // else if(gamePaused) {
+  //   // gameStarted = true;
+  //   document.addEventListener("keydown", function (event) {
+  //     if (event.key === "ArrowLeft") {
+  //       movePieceLeft(currentPiece);
+  //     } else if (event.key === "ArrowRight") {
+  //       movePieceRight(currentPiece);
+  //     } else if (event.key === "ArrowUp") {
+  //       rotatePiece(currentPiece);
+  //     } else if (event.key === "ArrowDown") {
+  //       movePieceDown(currentPiece);
+  //       // console.log(checkCollision(currentPiece));
+  //     }
  
-    });
+  //   });
    
    // this currentPiece thing has completely driven my around the bend....... How do I get the CURRENT piece and just pass it to the moveDown??
 
 
-    let currentPiece = getNextPiece();
-    drawPiece(currentPiece);
-    let nextPiece = getNextPiece();
-    drawNextPiece(nextPiece);
-    gameInterval = setInterval(() => {
+    // let currentPiece = getNextPiece();
+    // drawPiece(currentPiece);
+    // let nextPiece = getNextPiece();
+    // drawNextPiece(nextPiece);
+    // gameInterval = setInterval(() => {
         
-        restoreIdOrder();
+    //     restoreIdOrder();
         
 
         // if (checkCollision(currentPiece)) {
@@ -459,11 +463,11 @@ pauseButton.addEventListener('click', () => {
         //     nextPiece = getNextPiece();
         //     drawNextPiece(nextPiece);          
         // }
-        movePieceDown(currentPiece);
-    }, 1000); 
+//         movePieceDown(currentPiece);
+//     }, 1000); 
 
-  }
-})
+//   }
+// })
 
 // function remakeGrid () {
 // for (let i = 0; i < height; i++) {
@@ -488,16 +492,14 @@ function resetScoreSpeed() {
 resetButton.addEventListener('click', function(event) {
  
   resetScoreSpeed()
-
+// Is it not best to tro to remove the child element that were added when you first drew the grid?
   for(i = 0 ; i < nextPieceGrid.length; i++) {
     nextPieceGrid.romoveChild(row[i])
     console.log(grid)
   }
-//  let  allActiveElements = document.getElementsByClassName('active-piece')
-// console.log('active eleemtns', allActiveElements)
-// allActiveElements.element.classList.remove('active-piece')
+
   // remakeGrid()
   
 } )
 
-// const gridChildren = grid.children
+
