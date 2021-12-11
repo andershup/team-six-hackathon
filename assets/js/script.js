@@ -11,16 +11,41 @@ function updateHtml(id, html) {
 }
 
 const grid = getElement('grid');
+const width = 10;
+const height = 20;
 
+// const gridArray = [];
+
+// for (let i = 0; i < height; i++) {
+//     gridArray.push([]);
+//     for (let j = 0; j < width; j++) {
+//         gridArray[i].push(0);
+//     }
+// }
+
+// function createGrid() {
+//     for (let i = 0; i < gridArray.length; i++) {
+//         const row = document.createElement('div');
+//         row.className = 'row';
+//         row.id = `row-${i}`;
+//         for (let j = 0; j < gridArray[i].length; j++) {
+//             const cell = document.createElement('div');
+//             cell.className = 'cell';
+//             cell.id = `cell-${i}-${j}`;
+//             row.appendChild(cell);
+//         }
+//         grid.appendChild(row);
+//     }
+// }
 // create grid for tetris
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < height; i++) {
     const row = document.createElement('div');
     row.className = 'row';
-    row.id = `row ${i}`;
-    for (let j = 0; j < 10; j++) {
+    row.id = `row-${i}`;
+    for (let j = 0; j < width; j++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
-        cell.id = `cell ${i} ${j}`;
+        cell.id = `cell-${i}-${j}`;
         row.appendChild(cell);
     }
     grid.appendChild(row);
@@ -77,26 +102,26 @@ function getNextPiece() {
 // let currentPiece = getNextPiece();
 
 function drawPiece(piece) {
-    row = piece.row;
-    col = piece.col;
-    shape = piece.shape;
+    let row = piece.row;
+    let col = piece.col;
+    let shape = piece.shape;
     for (let i = 0; i < shape.length; i++) {
         for (let j = 0; j < shape[i].length; j++) {
             if (shape[i][j] === 1) {
-                getElement(`cell ${row + i} ${col + j}`).classList.add('active-piece');
+                getElement(`cell-${row + i}-${col + j}`).classList.add('active-piece');
             }
         }
     }
 }
 
 function undrawPiece(piece) {
-    row = piece.row;
-    col = piece.col;
-    shape = piece.shape;
+    let row = piece.row;
+    let col = piece.col;
+    let shape = piece.shape;
     for (let i = 0; i < shape.length; i++) {
         for (let j = 0; j < shape[i].length; j++) {
             if (shape[i][j] === 1) {
-                getElement(`cell ${row + i} ${col + j}`).classList.remove('active-piece');
+                getElement(`cell-${row + i}-${col + j}`).classList.remove('active-piece');
             }
         }
     }
@@ -148,12 +173,12 @@ function rotatePiece(piece) {
     drawPiece(piece);
 }
 function isVacantLeft(piece) {
-    col = piece.col;
-    shape = piece.shape;
-    height = piece.shape.length;
+    let col = piece.col;
+    let shape = piece.shape;
+    let height = piece.shape.length;
     for (let i = 0; i <= height; i++) {
         if (col > 0) {
-            if (getElement(`cell ${piece.row + i} ${col - 1}`).classList.contains('taken')) {
+            if (getElement(`cell-${piece.row + i}-${col - 1}`).classList.contains('taken')) {
                 return false;
             }
         }
@@ -162,13 +187,13 @@ function isVacantLeft(piece) {
 }
 
 function isVacantRight(piece) {
-    width = piece.shape[0].length;
-    col = piece.col + width - 1;
-    height = piece.shape.length;
+    let width = piece.shape[0].length;
+    let col = piece.col + width - 1;
+    let height = piece.shape.length;
     for (let i = 0; i <= height; i++) {
       if (col < 9) {
         if (
-          getElement(`cell ${piece.row + i} ${col + 1}`).classList.contains(
+          getElement(`cell-${piece.row + i}-${col + 1}`).classList.contains(
             "taken"
           )
         ) {
@@ -180,11 +205,11 @@ function isVacantRight(piece) {
 }
     
 function checkCollision(piece) {
-    row = piece.row;
-    col = piece.col;
-    shape = piece.shape;
-    width = piece.shape[0].length;
-    height = piece.shape.length;
+    let row = piece.row;
+    let col = piece.col;
+    let shape = piece.shape;
+    let width = piece.shape[0].length;
+    let height = piece.shape.length;
     // pieceCells = [];
     if (row + height >= 20) {
         return true;
@@ -192,7 +217,7 @@ function checkCollision(piece) {
         for (let i = 0; i < height; i++) {
             for (let j = 0; j < width; j++) {
                 if (shape[i][j] === 1) {
-                    if (getElement(`cell ${row + i + 1} ${col + j}`).classList.contains('taken')) {
+                    if (getElement(`cell-${row + i + 1}-${col + j}`).classList.contains('taken')) {
                         return true;
                     }
                 }
@@ -201,32 +226,55 @@ function checkCollision(piece) {
     }
     return false;
 }
-// drawPiece(currentPiece);
 
-function clearLines() {
-    for (let i = 0; i < 20; i++) {
-        let row = getElement(`row ${i}`);
-        let cells = row.children;
-        let full = true;
-        for (let j = 0; j < 10; j++) {
-            if (!cells[j].classList.contains('taken')) {
-                full = false;
-            }
-        }
-        if (full) {
-            for (let j = 0; j < 10; j++) {
-                cells[j].classList.remove('taken');
-                cells[j].classList.remove('active-piece');
-            }
-            for (let k = i; k > 1; k--) {
-                let prevRow = getElement(`row ${k - 1}`);
-                let prevCells = prevRow.children;
-                row.children = prevCells;
-            }
+function restoreIdOrder() {
+    let rows = getElements('row');
+    for (let i = 0; i < rows.length; i++) {
+        rows[i].id = `row-${i}`;
+        let cells = rows[i].children;
+        for (let j = 0; j < cells.length; j++) {
+            cells[j].id = `cell-${i}-${j}`;
         }
     }
 }
 
+function clearLines() {
+    let rows = grid.children;
+    let count = 0;
+    for (let i = 0; i < rows.length; i++) {
+        let cells = rows[i].children;
+        let full = true;
+        for (let j = 0; j < cells.length; j++) {
+            if (!cells[j].classList.contains('taken')) {
+                full = false;
+                break;
+            }
+        }
+        if (full) {
+            count++;
+            for (let k = 0; k < cells.length; k++) {
+                cells[k].classList.remove('taken');
+            }
+            grid.removeChild(rows[i]);
+            let row = document.createElement('div');
+            row.className = 'row';
+            row.id = `row-${i}`;
+            for (let l = 0; l < width; l++) {
+                let cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.id = `cell-${i}-${l}`;
+                row.appendChild(cell);
+            }
+            grid.insertBefore(row, rows[0]);
+        }
+    }
+    // if (count > 0) {
+    //     score += (count * 10);
+    //     updateScore();
+    //     lines += count;
+    //     updateLines();
+    // }
+}
 
 
 
@@ -241,6 +289,8 @@ let gamePaused = false;
 let gameStarted = false;
 let gameInterval;
 // TETRIS
+
+// createGrid();
 
 startButton.addEventListener('click', () => {
     if (!gameStarted) {
@@ -266,7 +316,8 @@ startButton.addEventListener('click', () => {
                 currentPiece.shape.forEach((row, i) => {
                     row.forEach((cell, j) => {
                         if (cell === 1) {
-                            getElement(`cell ${currentPiece.row + i} ${currentPiece.col + j}`).classList.add('taken');
+                            getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.remove('active-piece');
+                            getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.add('taken');
                         }
                     });
                 })                
@@ -274,6 +325,7 @@ startButton.addEventListener('click', () => {
             }
             movePieceDown(currentPiece);
             clearLines();
+            restoreIdOrder();
         }, 1000); 
     }
 });
