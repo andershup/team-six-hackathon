@@ -55,3 +55,7 @@ body {
 .active-piece {
     background-color: blue;
 }
+
+.taken {
+    background-color: blue;
+}
