@@ -113,7 +113,8 @@ function getNextPiece() {
   }
 }
 
-// let currentPiece = getNextPiece();
+
+// let activeCurrentPiece = getNextPiece();
 
 function drawPiece(piece) {
   let row = piece.row;
@@ -384,14 +385,16 @@ startButton.addEventListener('click', () => {
           movePieceDown(currentPiece);
       }, 1000); 
   }
+  
 });
 
 pauseButton.addEventListener('click', () => {
   console.log('firing pause')
   if(!gamePaused) {
     gamePaused = true;
+    //remove enventListener not working for some reason
     document.removeEventListener("keydown", function (event) {
-      console.log('you clicked')
+    
       if (event.key === "ArrowLeft") {
         movePieceLeft(currentPiece);
       } else if (event.key === "ArrowRight") {
@@ -410,8 +413,9 @@ pauseButton.addEventListener('click', () => {
 
     } 
   }
+  
   else if(gamePaused) {
-    gameStarted = true;
+    // gameStarted = true;
     document.addEventListener("keydown", function (event) {
       if (event.key === "ArrowLeft") {
         movePieceLeft(currentPiece);
@@ -423,13 +427,16 @@ pauseButton.addEventListener('click', () => {
         movePieceDown(currentPiece);
         // console.log(checkCollision(currentPiece));
       }
+ 
     });
-    // console.log('game started', gameStarted);
    
-    // let currentPiece = getNextPiece();
-    // drawPiece(currentPiece);
-    // let nextPiece = getNextPiece();
-    // drawNextPiece(nextPiece);
+   // this currentPiece thing has completely driven my around the bend....... How do I get the CURRENT piece and just pass it to the moveDown??
+
+
+    let currentPiece = getNextPiece();
+    drawPiece(currentPiece);
+    let nextPiece = getNextPiece();
+    drawNextPiece(nextPiece);
     gameInterval = setInterval(() => {
         
         restoreIdOrder();
@@ -479,9 +486,13 @@ function resetScoreSpeed() {
 }
 
 resetButton.addEventListener('click', function(event) {
-  console.log('firing')
+ 
   resetScoreSpeed()
 
+  for(i = 0 ; i < nextPieceGrid.length; i++) {
+    nextPieceGrid.romoveChild(row[i])
+    console.log(grid)
+  }
 //  let  allActiveElements = document.getElementsByClassName('active-piece')
 // console.log('active eleemtns', allActiveElements)
 // allActiveElements.element.classList.remove('active-piece')
@@ -490,8 +501,3 @@ resetButton.addEventListener('click', function(event) {
 } )
 
 // const gridChildren = grid.children
-
-// for(i = 0 ; i < gridChildren.length; i++) {
-//   myNewArray = gridChildren[i]
-//   console.log(myNewArray)
-// }
