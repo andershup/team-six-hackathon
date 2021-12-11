@@ -164,14 +164,15 @@ function rotatePiece(piece) {
         }
     }
     piece.shape = temp;
-    if (piece.col + piece.shape[0].length > 9) {
+    while (piece.col + piece.shape[0].length > 9) {
         piece.col--;
     }
-    if (piece.row + piece.shape.length > 20) {
+    while (piece.row + piece.shape.length > 20) {
         piece.row--;
     }
     drawPiece(piece);
 }
+
 function isVacantLeft(piece) {
     if (piece) {
         let col = piece.col;
@@ -326,11 +327,12 @@ startButton.addEventListener('click', () => {
                             getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.add('taken');
                         }
                     });
-                })                
+                })
+                clearLines();
+                restoreIdOrder();
                 currentPiece = getNextPiece();            
             }
             movePieceDown(currentPiece);
-            clearLines();
         }, 1000); 
     }
 });
