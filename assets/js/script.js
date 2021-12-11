@@ -173,35 +173,40 @@ function rotatePiece(piece) {
     drawPiece(piece);
 }
 function isVacantLeft(piece) {
-    let col = piece.col;
-    let shape = piece.shape;
-    let height = piece.shape.length;
-    for (let i = 0; i <= height; i++) {
-        if (col > 0) {
-            if (getElement(`cell-${piece.row + i}-${col - 1}`).classList.contains('taken')) {
-                return false;
+    if (piece) {
+        let col = piece.col;
+        let height = piece.shape.length;
+        for (let i = 0; i <= height; i++) {
+            if (col > 0) {
+                if (getElement(`cell-${piece.row + i}-${col - 1}`).classList.contains('taken')) {
+                    return false;
+                }
             }
         }
+        return true;
     }
-    return true;
+    return false;
 }
 
 function isVacantRight(piece) {
-    let width = piece.shape[0].length;
-    let col = piece.col + width - 1;
-    let height = piece.shape.length;
-    for (let i = 0; i <= height; i++) {
-      if (col < 9) {
-        if (
-          getElement(`cell-${piece.row + i}-${col + 1}`).classList.contains(
-            "taken"
-          )
-        ) {
-          return false;
+    if (piece) {
+        let width = piece.shape[0].length;
+        let col = piece.col + width - 1;
+        let height = piece.shape.length;
+        for (let i = 0; i <= height; i++) {
+          if (col < 9) {
+            if (
+              getElement(`cell-${piece.row + i}-${col + 1}`).classList.contains(
+                "taken"
+              )
+            ) {
+              return false;
+            }
+          }
         }
-      }
+        return true;
     }
-    return true;
+    return false;
 }
     
 function checkCollision(piece) {
@@ -290,7 +295,6 @@ let gameStarted = false;
 let gameInterval;
 // TETRIS
 
-// createGrid();
 
 startButton.addEventListener('click', () => {
     if (!gameStarted) {
@@ -311,6 +315,8 @@ startButton.addEventListener('click', () => {
         let currentPiece = getNextPiece();
         drawPiece(currentPiece);
         gameInterval = setInterval(() => {
+            restoreIdOrder();
+
             if (checkCollision(currentPiece)) {
                 // currentPiece.placed = true;
                 currentPiece.shape.forEach((row, i) => {
@@ -321,11 +327,10 @@ startButton.addEventListener('click', () => {
                         }
                     });
                 })                
-                currentPiece = getNextPiece();                
+                currentPiece = getNextPiece();            
             }
             movePieceDown(currentPiece);
             clearLines();
-            restoreIdOrder();
         }, 1000); 
     }
 });
