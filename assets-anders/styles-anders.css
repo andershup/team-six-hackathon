@@ -1,19 +1,13 @@
 html {
-  background-color: #000;
-    background-image: url(https://images.unsplash.com/photo-1531972497489-8eb337acf6e5?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=193456e9385b553747a5e0f0cbc7badb&auto=format&fit=crop&w=1334&q=80);
+  /* background-color: #000; */
+    /* background-image: url(https://images.unsplash.com/photo-1531972497489-8eb337acf6e5?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=193456e9385b553747a5e0f0cbc7badb&auto=format&fit=crop&w=1334&q=80); */
   background-size: cover;
   height: 100%;
   background-repeat: no-repeat;
 }
 
 
-body {
-    /* background-color: black; */
-    background-image: url("./images/background-house-two.png");
-background-position: center;
-background-repeat: no-repeat;
-background-size: cover;
-}
+
 
 
 * {
@@ -26,6 +20,12 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    background-image: url("./images/exploding-present.png");
+    /* background-position: center; */
+    background-repeat: no-repeat;
+    /* background-size: cover; */
+    background-size: 100% 100%;
+
 }
 .cell, .cell-next {
     display: table-cell;
@@ -161,6 +161,15 @@ background-size: cover;
       -webkit-transform: translate3d(-50%, 0, 0);
       transform: translate3d(-50%, 0, 0);
     }
+  }
+
+  .snow-bank {
+z-index: 99;
+      height: 200px;
+    background-image: url("./images/snowbank.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
  
