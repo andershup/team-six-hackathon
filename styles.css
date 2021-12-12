@@ -5,8 +5,7 @@
 }
 
 html {
-    background: linear-gradient(90deg, #be1a04 15%, #e66b66 45%, #af0a0a 80%);
-    background-size: cover;
+    background-image: url(images/santa-lights-night.jpeg);
 }
 
 body {
@@ -46,24 +45,24 @@ body {
 #grid {
     /* margin: 30px auto;
     width: fit-content; */
-    padding: 10px;
-    margin: 10px;
+    padding: 8px;
+    margin: 8px;
 }
 
 #next-piece {
-    padding: 10px;
-    margin: 10px;
+    padding: 8px;
+    margin: 8px;
 }
 
 #score-container {
-    padding: 10px;
-    margin: 10px;
+    padding: 7px;
+    margin: 7px;
 }
 
 .buttons {
     display: flex;
     justify-content: center;
-    margin: 20px;
+    margin: 10px;
     width: 100%;
     align-items: center;
 }
@@ -82,7 +81,7 @@ body {
 }
 
 .active-piece {
-    background-color: blue;
+    background-color: rgb(0, 255, 85);
 }
 
 .taken {

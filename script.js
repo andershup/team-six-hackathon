@@ -6,64 +6,41 @@ function getElements(className) {
     return document.getElementsByClassName(className);
 }
 
-// function updateHtml(id, html) {
-//     getElement(id).innerHTML = html;
-// }
-
 const grid = getElement('grid');
 const width = 10;
 const height = 20;
 const nextPieceGrid = getElement('next-piece');
 const scoreElement = getElement('score');
-// const gridArray = [];
 
-// for (let i = 0; i < height; i++) {
-//     gridArray.push([]);
-//     for (let j = 0; j < width; j++) {
-//         gridArray[i].push(0);
-//     }
-// }
-
-// function createGrid() {
-//     for (let i = 0; i < gridArray.length; i++) {
-//         const row = document.createElement('div');
-//         row.className = 'row';
-//         row.id = `row-${i}`;
-//         for (let j = 0; j < gridArray[i].length; j++) {
-//             const cell = document.createElement('div');
-//             cell.className = 'cell';
-//             cell.id = `cell-${i}-${j}`;
-//             row.appendChild(cell);
-//         }
-//         grid.appendChild(row);
-//     }
-// }
 // create grid for tetris
-for (let i = 0; i < height; i++) {
-    const row = document.createElement('div');
-    row.className = 'row';
-    row.id = `row-${i}`;
-    for (let j = 0; j < width; j++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.id = `cell-${i}-${j}`;
-        row.appendChild(cell);
+
+function createGrids() {
+    for (let i = 0; i < height; i++) {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.id = `row-${i}`;
+        for (let j = 0; j < width; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.id = `cell-${i}-${j}`;
+            row.appendChild(cell);
+        }
+        grid.appendChild(row);
     }
-    grid.appendChild(row);
+    for (let i = 0; i < 5; i++) {
+        const row = document.createElement('div');
+        row.className = 'row-next';
+        row.id = `rowNext-${i}`;
+        for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell-next';
+            cell.id = `cellNext-${i}-${j}`;
+            row.appendChild(cell);
+        }
+        nextPieceGrid.appendChild(row);
+    }
 }
 
-for (let i = 0; i < 5; i++) {
-    const row = document.createElement('div');
-    row.className = 'row-next';
-    row.id = `rowNext-${i}`;
-    for (let j = 0; j < 5; j++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell-next';
-        cell.id = `cellNext-${i}-${j}`;
-        row.appendChild(cell);
-    }
-    nextPieceGrid.appendChild(row);
-}
 
 // create tetris shapes
 const iShape = [
@@ -112,7 +89,6 @@ function getNextPiece() {
     }
 }
 
-// let currentPiece = getNextPiece();
 
 function drawPiece(piece) {
     let row = piece.row;
@@ -254,7 +230,6 @@ function checkCollision(piece) {
     let shape = piece.shape;
     let width = piece.shape[0].length;
     let height = piece.shape.length;
-    // pieceCells = [];
     if (row + height >= 20) {
         return true;
     } else {
@@ -315,13 +290,24 @@ function clearLines() {
     if (count > 0) {
         score += (count * 10);
         updateScore();
-        // lines += count;
-        // updateLines();
     }
 }
 
 function updateScore() {
     scoreElement.innerHTML = score;
+}
+
+function pieceControls(event) {    
+        if (event.key === "ArrowLeft") {
+          movePieceLeft(currentPiece);
+        } else if (event.key === "ArrowRight") {
+          movePieceRight(currentPiece);
+        } else if (event.key === "ArrowUp") {
+          rotatePiece(currentPiece);
+        } else if (event.key === "ArrowDown") {
+          movePieceDown(currentPiece);
+          // console.log(checkCollision(currentPiece));
+        }      
 }
 
 // Buttons 
@@ -334,53 +320,128 @@ let gameOver = false;
 let gamePaused = false;
 let gameStarted = false;
 let gameInterval;
+let currentPiece;
+let nextPiece;
 let score = 0;
 // TETRIS
 
-
-startButton.addEventListener('click', () => {
+function runGame() {
     if (!gameStarted) {
-        gameStarted = true;
-        document.addEventListener("keydown", function (event) {
-          if (event.key === "ArrowLeft") {
-            movePieceLeft(currentPiece);
-          } else if (event.key === "ArrowRight") {
-            movePieceRight(currentPiece);
-          } else if (event.key === "ArrowUp") {
-            rotatePiece(currentPiece);
-          } else if (event.key === "ArrowDown") {
-            movePieceDown(currentPiece);
-            // console.log(checkCollision(currentPiece));
-          }
-        });
-        console.log('game started', gameStarted);
-        let currentPiece = getNextPiece();
-        drawPiece(currentPiece);
-        let nextPiece = getNextPiece();
-        drawNextPiece(nextPiece);
-        gameInterval = setInterval(() => {
-            
-            restoreIdOrder();
-            
+      gameStarted = true;
+      document.addEventListener("keydown", pieceControls);
+      console.log("game started", gameStarted);
+      currentPiece = getNextPiece();
+      drawPiece(currentPiece);
+      nextPiece = getNextPiece();
+      drawNextPiece(nextPiece);
+      gameInterval = setInterval(() => {
+        restoreIdOrder();
+        checkGameOver(currentPiece);
 
-            if (checkCollision(currentPiece)) {
-                currentPiece.placed = true;
-                currentPiece.shape.forEach((row, i) => {
-                    row.forEach((cell, j) => {
-                        if (cell === 1) {
-                            getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.remove('active-piece');
-                            getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.add('taken');
-                        }
-                    });
-                })
-                clearLines();
-                restoreIdOrder();
-                currentPiece = nextPiece;
-                undrawNextPiece(nextPiece);
-                nextPiece = getNextPiece();
-                drawNextPiece(nextPiece);          
-            }
-            movePieceDown(currentPiece);
-        }, 1000); 
+        if (checkCollision(currentPiece)) {
+          currentPiece.placed = true;
+          currentPiece.shape.forEach((row, i) => {
+            row.forEach((cell, j) => {
+              if (cell === 1) {
+                getElement(
+                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                ).classList.remove("active-piece");
+                getElement(
+                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                ).classList.add("taken");
+              }
+            });
+          });
+          clearLines();
+          restoreIdOrder();
+          currentPiece = nextPiece;
+          undrawNextPiece(nextPiece);
+          nextPiece = getNextPiece();
+          drawNextPiece(nextPiece);
+        }
+        movePieceDown(currentPiece);
+      }, 500);
+    } else {
+        gameInterval = setInterval(() => {
+          restoreIdOrder();
+
+          if (checkCollision(currentPiece)) {
+            currentPiece.placed = true;
+            currentPiece.shape.forEach((row, i) => {
+              row.forEach((cell, j) => {
+                if (cell === 1) {
+                  getElement(
+                    `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                  ).classList.remove("active-piece");
+                  getElement(
+                    `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                  ).classList.add("taken");
+                }
+              });
+            });
+            clearLines();
+            restoreIdOrder();
+            currentPiece = nextPiece;
+            undrawNextPiece(nextPiece);
+            nextPiece = getNextPiece();
+            drawNextPiece(nextPiece);
+          }
+          movePieceDown(currentPiece);
+        }, 500);
     }
-});
+}
+
+function pauseGame() {
+    if (gameStarted && !gamePaused) {
+        gamePaused = true;
+        clearInterval(gameInterval);
+        console.log("game paused", gamePaused);
+        pauseButton.innerText = "Resume";
+        currentPiece = currentPiece;
+        document.removeEventListener("keydown", pieceControls);
+    } else {
+        gamePaused = false;
+        runGame();
+        console.log("game resumed");
+        pauseButton.innerText = "Pause";
+        document.addEventListener("keydown", pieceControls);
+    }
+}
+
+function resetGame() {
+    gameStarted = false;
+    gameOver = false;
+    gamePaused = false;
+    currentPiece = null;
+    nextPiece = null;
+    clearInterval(gameInterval);
+    score = 0;
+    updateScore();
+    getElement('grid').innerHTML = '';
+    getElement('next-piece').innerHTML = '';
+    console.log("game reset");
+    document.removeEventListener("keydown", pieceControls);
+    createGrids();
+}
+
+function checkGameOver(piece) {
+    if(piece.row === 0 && checkCollision(piece)) {
+        gameOver = true;
+        gameStarted = false;
+        gamePaused = false;
+        currentPiece = null;
+        nextPiece = null;
+        clearInterval(gameInterval);
+        console.log("game over");
+        pauseButton.innerText = "Start";
+        resetButton.innerText = "Reset";
+        document.removeEventListener("keydown", pieceControls);
+    }
+
+}
+
+
+createGrids();
+startButton.addEventListener('click', runGame);
+pauseButton.addEventListener('click', pauseGame);
+resetButton.addEventListener('click', resetGame);
