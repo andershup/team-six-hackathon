@@ -6,38 +6,12 @@ function getElements(className) {
     return document.getElementsByClassName(className);
 }
 
-// function updateHtml(id, html) {
-//     getElement(id).innerHTML = html;
-// }
-
 const grid = getElement('grid');
 const width = 10;
 const height = 20;
 const nextPieceGrid = getElement('next-piece');
 const scoreElement = getElement('score');
-// const gridArray = [];
 
-// for (let i = 0; i < height; i++) {
-//     gridArray.push([]);
-//     for (let j = 0; j < width; j++) {
-//         gridArray[i].push(0);
-//     }
-// }
-
-// function createGrid() {
-//     for (let i = 0; i < gridArray.length; i++) {
-//         const row = document.createElement('div');
-//         row.className = 'row';
-//         row.id = `row-${i}`;
-//         for (let j = 0; j < gridArray[i].length; j++) {
-//             const cell = document.createElement('div');
-//             cell.className = 'cell';
-//             cell.id = `cell-${i}-${j}`;
-//             row.appendChild(cell);
-//         }
-//         grid.appendChild(row);
-//     }
-// }
 // create grid for tetris
 for (let i = 0; i < height; i++) {
     const row = document.createElement('div');
@@ -112,7 +86,6 @@ function getNextPiece() {
     }
 }
 
-// let currentPiece = getNextPiece();
 
 function drawPiece(piece) {
     let row = piece.row;
@@ -254,7 +227,6 @@ function checkCollision(piece) {
     let shape = piece.shape;
     let width = piece.shape[0].length;
     let height = piece.shape.length;
-    // pieceCells = [];
     if (row + height >= 20) {
         return true;
     } else {
@@ -315,14 +287,13 @@ function clearLines() {
     if (count > 0) {
         score += (count * 10);
         updateScore();
-        // lines += count;
-        // updateLines();
     }
 }
 
 function updateScore() {
     scoreElement.innerHTML = score;
 }
+
 
 // Buttons 
 const startButton = getElement('start');
@@ -337,50 +308,53 @@ let gameInterval;
 let score = 0;
 // TETRIS
 
-
-startButton.addEventListener('click', () => {
+function runGame() {
     if (!gameStarted) {
-        gameStarted = true;
-        document.addEventListener("keydown", function (event) {
-          if (event.key === "ArrowLeft") {
-            movePieceLeft(currentPiece);
-          } else if (event.key === "ArrowRight") {
-            movePieceRight(currentPiece);
-          } else if (event.key === "ArrowUp") {
-            rotatePiece(currentPiece);
-          } else if (event.key === "ArrowDown") {
-            movePieceDown(currentPiece);
-            // console.log(checkCollision(currentPiece));
-          }
-        });
-        console.log('game started', gameStarted);
-        let currentPiece = getNextPiece();
-        drawPiece(currentPiece);
-        let nextPiece = getNextPiece();
-        drawNextPiece(nextPiece);
-        gameInterval = setInterval(() => {
-            
-            restoreIdOrder();
-            
+      gameStarted = true;
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowLeft") {
+          movePieceLeft(currentPiece);
+        } else if (event.key === "ArrowRight") {
+          movePieceRight(currentPiece);
+        } else if (event.key === "ArrowUp") {
+          rotatePiece(currentPiece);
+        } else if (event.key === "ArrowDown") {
+          movePieceDown(currentPiece);
+          // console.log(checkCollision(currentPiece));
+        }
+      });
+      console.log("game started", gameStarted);
+      let currentPiece = getNextPiece();
+      drawPiece(currentPiece);
+      let nextPiece = getNextPiece();
+      drawNextPiece(nextPiece);
+      gameInterval = setInterval(() => {
+        restoreIdOrder();
 
-            if (checkCollision(currentPiece)) {
-                currentPiece.placed = true;
-                currentPiece.shape.forEach((row, i) => {
-                    row.forEach((cell, j) => {
-                        if (cell === 1) {
-                            getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.remove('active-piece');
-                            getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.add('taken');
-                        }
-                    });
-                })
-                clearLines();
-                restoreIdOrder();
-                currentPiece = nextPiece;
-                undrawNextPiece(nextPiece);
-                nextPiece = getNextPiece();
-                drawNextPiece(nextPiece);          
-            }
-            movePieceDown(currentPiece);
-        }, 1000); 
+        if (checkCollision(currentPiece)) {
+          currentPiece.placed = true;
+          currentPiece.shape.forEach((row, i) => {
+            row.forEach((cell, j) => {
+              if (cell === 1) {
+                getElement(
+                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                ).classList.remove("active-piece");
+                getElement(
+                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                ).classList.add("taken");
+              }
+            });
+          });
+          clearLines();
+          restoreIdOrder();
+          currentPiece = nextPiece;
+          undrawNextPiece(nextPiece);
+          nextPiece = getNextPiece();
+          drawNextPiece(nextPiece);
+        }
+        movePieceDown(currentPiece);
+      }, 500);
     }
-});
+}
+
+startButton.addEventListener('click', runGame);
