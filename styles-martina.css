@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
+=======
+
+>>>>>>> 9b25b3c (Add style and background)
 
 html {
     background-image: url(/images/santa-lights-night.jpeg);
