@@ -5,8 +5,10 @@
 }
 
 html {
-    background: linear-gradient(90deg, #be1a04 15%, #e66b66 45%, #af0a0a 80%);
+    background-image: url(/images/santa-lights-night.jpeg);
     background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 body {
