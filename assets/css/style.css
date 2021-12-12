@@ -1,3 +1,4 @@
+<<<<<<< HEAD:assets/css/style.css
 * {
     padding: 0;
     margin: 0;
@@ -119,4 +120,8 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+=======
+.test {
+    background-color: red;
+>>>>>>> parent of e136977 (Add background color, buttons style):styles.css
 }
