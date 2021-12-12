@@ -297,6 +297,18 @@ function updateScore() {
     scoreElement.innerHTML = score;
 }
 
+function pieceControls(event) {    
+        if (event.key === "ArrowLeft") {
+          movePieceLeft(currentPiece);
+        } else if (event.key === "ArrowRight") {
+          movePieceRight(currentPiece);
+        } else if (event.key === "ArrowUp") {
+          rotatePiece(currentPiece);
+        } else if (event.key === "ArrowDown") {
+          movePieceDown(currentPiece);
+          // console.log(checkCollision(currentPiece));
+        }      
+}
 
 // Buttons 
 const startButton = getElement('start');
@@ -316,18 +328,7 @@ let score = 0;
 function runGame() {
     if (!gameStarted) {
       gameStarted = true;
-      document.addEventListener("keydown", function (event) {
-        if (event.key === "ArrowLeft") {
-          movePieceLeft(currentPiece);
-        } else if (event.key === "ArrowRight") {
-          movePieceRight(currentPiece);
-        } else if (event.key === "ArrowUp") {
-          rotatePiece(currentPiece);
-        } else if (event.key === "ArrowDown") {
-          movePieceDown(currentPiece);
-          // console.log(checkCollision(currentPiece));
-        }
-      });
+      document.addEventListener("keydown", pieceControls);
       console.log("game started", gameStarted);
       currentPiece = getNextPiece();
       drawPiece(currentPiece);
@@ -335,6 +336,7 @@ function runGame() {
       drawNextPiece(nextPiece);
       gameInterval = setInterval(() => {
         restoreIdOrder();
+        checkGameOver(currentPiece);
 
         if (checkCollision(currentPiece)) {
           currentPiece.placed = true;
@@ -396,11 +398,13 @@ function pauseGame() {
         console.log("game paused", gamePaused);
         pauseButton.innerText = "Resume";
         currentPiece = currentPiece;
+        document.removeEventListener("keydown", pieceControls);
     } else {
         gamePaused = false;
         runGame();
         console.log("game resumed");
         pauseButton.innerText = "Pause";
+        document.addEventListener("keydown", pieceControls);
     }
 }
 
@@ -408,14 +412,35 @@ function resetGame() {
     gameStarted = false;
     gameOver = false;
     gamePaused = false;
+    currentPiece = null;
+    nextPiece = null;
     clearInterval(gameInterval);
     score = 0;
     updateScore();
     getElement('grid').innerHTML = '';
     getElement('next-piece').innerHTML = '';
     console.log("game reset");
+    document.removeEventListener("keydown", pieceControls);
     createGrids();
 }
+
+function checkGameOver(piece) {
+    if(piece.row === 0 && checkCollision(piece)) {
+        gameOver = true;
+        gameStarted = false;
+        gamePaused = false;
+        currentPiece = null;
+        nextPiece = null;
+        clearInterval(gameInterval);
+        console.log("game over");
+        pauseButton.innerText = "Start";
+        resetButton.innerText = "Reset";
+        document.removeEventListener("keydown", pieceControls);
+    }
+
+}
+
+
 createGrids();
 startButton.addEventListener('click', runGame);
 pauseButton.addEventListener('click', pauseGame);
