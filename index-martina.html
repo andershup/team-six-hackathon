@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,22 +9,36 @@
     <title>HoliDayTris</title>
     <link rel="stylesheet" href="styles-martina.css">
 </head>
+
 <body>
-    <div id="game-container">
-        <div id="next-piece"></div>
-        <div id="grid">        
-        </div>
-        <div id="score-container">
-            <div>Score:<span id="score">0</span></div>
-            <div>Speed:<span id="speed">0</span></div>
+
+
+    <!-- <div id="instructions">
+            click and drag to control the animation</div> -->
+    <div class="snow">
+        <div id="game-container">
+            <div id="next-piece"></div>
+            <div id="grid">
+            </div>
+            <div id="score-container">
+
+                <div>Score:<span id="score">0</span></div>
+                <div>Speed:<span id="speed">0</span></div>
+            </div>
+
         </div>
         
+        <div class="buttons">
+            <button class="btn-game" id="start">Start</button>
+            <button class="btn-game" id="pause">Pause</button>
+            <button class="btn-game" id="reset">Reset</button>
+            
+        </div>
+        
+        <script src="script.js"></script>
+        <script src="animation-martina.js"></script>
     </div>
-    <div class="buttons">
-        <button class="btn-game" id="start">Start</button>
-        <button class="btn-game" id="pause">Pause</button>
-        <button class="btn-game" id="reset">Reset</button>
-    </div>
-    <script src="script.js"></script>
+
 </body>
+
 </html>
