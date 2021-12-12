@@ -13,31 +13,34 @@ const nextPieceGrid = getElement('next-piece');
 const scoreElement = getElement('score');
 
 // create grid for tetris
-for (let i = 0; i < height; i++) {
-    const row = document.createElement('div');
-    row.className = 'row';
-    row.id = `row-${i}`;
-    for (let j = 0; j < width; j++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.id = `cell-${i}-${j}`;
-        row.appendChild(cell);
+
+function createGrids() {
+    for (let i = 0; i < height; i++) {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.id = `row-${i}`;
+        for (let j = 0; j < width; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.id = `cell-${i}-${j}`;
+            row.appendChild(cell);
+        }
+        grid.appendChild(row);
     }
-    grid.appendChild(row);
+    for (let i = 0; i < 5; i++) {
+        const row = document.createElement('div');
+        row.className = 'row-next';
+        row.id = `rowNext-${i}`;
+        for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell-next';
+            cell.id = `cellNext-${i}-${j}`;
+            row.appendChild(cell);
+        }
+        nextPieceGrid.appendChild(row);
+    }
 }
 
-for (let i = 0; i < 5; i++) {
-    const row = document.createElement('div');
-    row.className = 'row-next';
-    row.id = `rowNext-${i}`;
-    for (let j = 0; j < 5; j++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell-next';
-        cell.id = `cellNext-${i}-${j}`;
-        row.appendChild(cell);
-    }
-    nextPieceGrid.appendChild(row);
-}
 
 // create tetris shapes
 const iShape = [
@@ -305,6 +308,8 @@ let gameOver = false;
 let gamePaused = false;
 let gameStarted = false;
 let gameInterval;
+let currentPiece;
+let nextPiece;
 let score = 0;
 // TETRIS
 
@@ -324,9 +329,9 @@ function runGame() {
         }
       });
       console.log("game started", gameStarted);
-      let currentPiece = getNextPiece();
+      currentPiece = getNextPiece();
       drawPiece(currentPiece);
-      let nextPiece = getNextPiece();
+      nextPiece = getNextPiece();
       drawNextPiece(nextPiece);
       gameInterval = setInterval(() => {
         restoreIdOrder();
@@ -354,7 +359,64 @@ function runGame() {
         }
         movePieceDown(currentPiece);
       }, 500);
+    } else {
+        gameInterval = setInterval(() => {
+          restoreIdOrder();
+
+          if (checkCollision(currentPiece)) {
+            currentPiece.placed = true;
+            currentPiece.shape.forEach((row, i) => {
+              row.forEach((cell, j) => {
+                if (cell === 1) {
+                  getElement(
+                    `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                  ).classList.remove("active-piece");
+                  getElement(
+                    `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                  ).classList.add("taken");
+                }
+              });
+            });
+            clearLines();
+            restoreIdOrder();
+            currentPiece = nextPiece;
+            undrawNextPiece(nextPiece);
+            nextPiece = getNextPiece();
+            drawNextPiece(nextPiece);
+          }
+          movePieceDown(currentPiece);
+        }, 500);
     }
 }
 
+function pauseGame() {
+    if (gameStarted && !gamePaused) {
+        gamePaused = true;
+        clearInterval(gameInterval);
+        console.log("game paused", gamePaused);
+        pauseButton.innerText = "Resume";
+        currentPiece = currentPiece;
+    } else {
+        gamePaused = false;
+        runGame();
+        console.log("game resumed");
+        pauseButton.innerText = "Pause";
+    }
+}
+
+function resetGame() {
+    gameStarted = false;
+    gameOver = false;
+    gamePaused = false;
+    clearInterval(gameInterval);
+    score = 0;
+    updateScore();
+    getElement('grid').innerHTML = '';
+    getElement('next-piece').innerHTML = '';
+    console.log("game reset");
+    createGrids();
+}
+createGrids();
 startButton.addEventListener('click', runGame);
+pauseButton.addEventListener('click', pauseGame);
+resetButton.addEventListener('click', resetGame);
