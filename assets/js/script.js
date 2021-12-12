@@ -287,8 +287,6 @@ function clearLines() {
     if (count > 0) {
         score += (count * 10);
         updateScore();
-        // lines += count;
-        // updateLines();
     }
 }
 
@@ -355,7 +353,7 @@ function runGame() {
           drawNextPiece(nextPiece);
         }
         movePieceDown(currentPiece);
-      }, 1000);
+      }, 500);
     }
 }
 
