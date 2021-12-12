@@ -11,7 +11,15 @@ const width = 10;
 const height = 20;
 const nextPieceGrid = getElement('next-piece');
 const scoreElement = getElement('score');
+const colorClasses = [
+  "dark-blue-box",
+  "blue-box",
+  "green-box",
+  "orange-box",
+  "purple-box",
+  "red-box",
 
+];
 // create grid for tetris
 
 function createGrids() {
@@ -85,6 +93,7 @@ function getNextPiece() {
         shape: getRandomShape(),
         row: 0,
         col: 3,
+        color: colorClasses[Math.floor(Math.random() * colorClasses.length)],
         placed: false
     }
 }
@@ -94,10 +103,12 @@ function drawPiece(piece) {
     let row = piece.row;
     let col = piece.col;
     let shape = piece.shape;
+    let color = piece.color;
     for (let i = 0; i < shape.length; i++) {
         for (let j = 0; j < shape[i].length; j++) {
             if (shape[i][j] === 1) {
                 getElement(`cell-${row + i}-${col + j}`).classList.add('active-piece');
+                getElement(`cell-${row + i}-${col + j}`).classList.add(color);          
             }
         }
     }
@@ -107,10 +118,12 @@ function drawNextPiece(piece) {
     let row = piece.row;
     let col = piece.col;
     let shape = piece.shape;
+    let color = piece.color;
     for (let i = 0; i < shape.length; i++) {
         for (let j = 0; j < shape[i].length; j++) {
             if (shape[i][j] === 1) {
                 getElement(`cellNext-${row + i + 1}-${col + j - 2}`).classList.add('active-piece');
+                getElement(`cellNext-${row + i + 1}-${col + j - 2}`).classList.add(color);
             }
         }
     }
@@ -120,19 +133,23 @@ function undrawPiece(piece) {
     let row = piece.row;
     let col = piece.col;
     let shape = piece.shape;
+    let color = piece.color;
     for (let i = 0; i < shape.length; i++) {
         for (let j = 0; j < shape[i].length; j++) {
             if (shape[i][j] === 1) {
                 getElement(`cell-${row + i}-${col + j}`).classList.remove('active-piece');
+                getElement(`cell-${row + i}-${col + j}`).classList.remove(color);
             }
         }
     }
 }
 
 function undrawNextPiece(piece) {
+    let color = piece.color;
     let cells = getElements('cell-next');
     for (let i = 0; i < cells.length; i++) {
         cells[i].classList.remove('active-piece');
+        cells[i].classList.remove(color);
     }
 }
 
