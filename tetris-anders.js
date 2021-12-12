@@ -1,0 +1,519 @@
+function getElement(id) {
+  return document.getElementById(id);
+}
+
+function getElements(className) {
+  return document.getElementsByClassName(className);
+}
+
+// function updateHtml(id, html) {
+//     getElement(id).innerHTML = html;
+// }
+
+const grid = getElement('grid');
+const width = 10;
+const height = 20;
+const nextPieceGrid = getElement('next-piece');
+const scoreElement = getElement('score');
+const speedElement = getElement('speed')
+const gridArray = [];
+
+// for (let i = 0; i < height; i++) {
+//     gridArray.push([]);
+//     for (let j = 0; j < width; j++) {
+//         gridArray[i].push(0);
+//     }
+// }
+
+// function createGrid() {
+//     for (let i = 0; i < gridArray.length; i++) {
+//         const row = document.createElement('div');
+//         row.className = 'row';
+//         row.id = `row-${i}`;
+//         for (let j = 0; j < gridArray[i].length; j++) {
+//             const cell = document.createElement('div');
+//             cell.className = 'cell';
+//             cell.id = `cell-${i}-${j}`;
+//             row.appendChild(cell);
+//         }
+//         grid.appendChild(row);
+//     }
+// }
+// create grid for tetris
+for (let i = 0; i < height; i++) {
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.id = `row-${i}`;
+  for (let j = 0; j < width; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.id = `cell-${i}-${j}`;
+      row.appendChild(cell);
+  }
+  grid.appendChild(row);
+}
+
+for (let i = 0; i < 5; i++) {
+  const row = document.createElement('div');
+  row.className = 'row-next';
+  row.id = `rowNext-${i}`;
+  for (let j = 0; j < 5; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell-next';
+      cell.id = `cellNext-${i}-${j}`;
+      row.appendChild(cell);
+  }
+  nextPieceGrid.appendChild(row);
+}
+
+// create tetris shapes
+const iShape = [
+  [1, 1, 1, 1]
+];
+const oShape = [
+  [1, 1],
+  [1, 1]
+];
+const tShape = [
+  [1, 1, 1],
+  [0, 1, 0]
+];
+const lShape = [
+  [1, 0],
+  [1, 0],
+  [1, 1]
+];
+const jShape = [
+  [0, 1],
+  [0, 1],
+  [1, 1]
+];
+const zShape = [
+  [1, 1, 0],
+  [0, 1, 1]
+];
+const sShape = [
+  [0, 1, 1],
+  [1, 1, 0]
+];
+const shapes = [iShape, oShape, tShape, lShape, jShape, zShape, sShape];
+
+
+function getRandomShape() {
+  return shapes[Math.floor(Math.random() * shapes.length)];
+}
+
+
+function getNextPiece() {
+  return {
+      shape: getRandomShape(),
+      row: 0,
+      col: 3,
+      placed: false
+  }
+}
+
+
+// let activeCurrentPiece = getNextPiece();
+
+function drawPiece(piece) {
+  let row = piece.row;
+  let col = piece.col;
+  let shape = piece.shape;
+  for (let i = 0; i < shape.length; i++) {
+      for (let j = 0; j < shape[i].length; j++) {
+          if (shape[i][j] === 1) {
+              getElement(`cell-${row + i}-${col + j}`).classList.add('active-piece');
+          }
+      }
+  }
+}
+
+function drawNextPiece(piece) {
+  let row = piece.row;
+  let col = piece.col;
+  let shape = piece.shape;
+  for (let i = 0; i < shape.length; i++) {
+      for (let j = 0; j < shape[i].length; j++) {
+          if (shape[i][j] === 1) {
+              getElement(`cellNext-${row + i + 1}-${col + j - 2}`).classList.add('active-piece');
+          }
+      }
+  }
+}
+
+function undrawPiece(piece) {
+  let row = piece.row;
+  let col = piece.col;
+  let shape = piece.shape;
+  for (let i = 0; i < shape.length; i++) {
+      for (let j = 0; j < shape[i].length; j++) {
+          if (shape[i][j] === 1) {
+              getElement(`cell-${row + i}-${col + j}`).classList.remove('active-piece');
+          }
+      }
+  }
+}
+
+function undrawNextPiece(piece) {
+  let cells = getElements('cell-next');
+  for (let i = 0; i < cells.length; i++) {
+      cells[i].classList.remove('active-piece');
+  }
+}
+
+function movePieceLeft(piece) {
+  undrawPiece(piece);
+  if (piece.col > 0 && isVacantLeft(piece)) {
+      piece.col--;
+  }
+  drawPiece(piece);
+}
+
+function movePieceRight(piece) {
+  undrawPiece(piece);
+  if (piece.col + piece.shape[0].length <= 9 && isVacantRight(piece)) {
+      piece.col++;
+  }
+  drawPiece(piece);
+}
+
+function movePieceDown(piece) {
+  undrawPiece(piece);
+  if (piece.row + piece.shape.length < 20 && !checkCollision(piece)) {
+      piece.row++;
+  }
+  drawPiece(piece);
+}
+
+
+function rotatePiece(piece) {
+  if (piece && !piece.placed) {
+      undrawPiece(piece);
+      let width = piece.shape[0].length;
+      let height = piece.shape.length;
+      let temp = [];
+      for (let i = 0; i < width; i++) {
+          temp[i] = [];
+          for (let j = 0; j < height; j++) {
+              temp[i][j] = piece.shape[height - 1 - j][i];
+          }
+      }
+      piece.shape = temp;
+      while (piece.col + piece.shape[0].length > 9 || !isVacantRight(piece)) {
+          piece.col--;
+      }
+      while (piece.col < 0 || !isVacantLeft(piece)) {
+          piece.col++;
+      }
+      while (piece.row + piece.shape.length > 20 || checkCollision(piece)) {
+          piece.row--;
+      }
+      drawPiece(piece);
+  }
+}
+
+function isVacantLeft(piece) {
+  if (piece && !piece.placed) {
+      let col = piece.col;
+      let height = piece.shape.length;
+      for (let i = 0; i <= height; i++) {
+          if (col > 0) {
+              if (getElement(`cell-${piece.row + i}-${col - 1}`).classList.contains('taken')) {
+                  return false;
+              }
+          }
+      }
+      return true;
+  }
+  return false;
+}
+
+function isVacantRight(piece) {
+  if (piece && !piece.placed) {
+      let width = piece.shape[0].length;
+      let col = piece.col + width - 1;
+      let height = piece.shape.length;
+      for (let i = 0; i <= height; i++) {
+        if (col < 9) {
+          if (
+            getElement(`cell-${piece.row + i}-${col + 1}`).classList.contains(
+              "taken"
+            )
+          ) {
+            return false;
+          }
+        }
+      }
+      return true;
+  }
+  return false;
+}
+  
+function checkCollision(piece) {
+  let row = piece.row;
+  let col = piece.col;
+  let shape = piece.shape;
+  let width = piece.shape[0].length;
+  let height = piece.shape.length;
+  // pieceCells = [];
+  if (row + height >= 20) {
+      return true;
+  } else {
+      for (let i = 0; i < height; i++) {
+          for (let j = 0; j < width; j++) {
+              if (shape[i][j] === 1) {
+                  if (getElement(`cell-${row + i + 1}-${col + j}`).classList.contains('taken')) {
+                      return true;
+                  }
+              }
+          }
+      }
+  }
+  return false;
+}
+
+function restoreIdOrder() {
+  let rows = getElements('row');
+  for (let i = 0; i < rows.length; i++) {
+      rows[i].id = `row-${i}`;
+      let cells = rows[i].children;
+      for (let j = 0; j < cells.length; j++) {
+          cells[j].id = `cell-${i}-${j}`;
+      }
+  }
+}
+
+function clearLines() {
+  let rows = grid.children;
+  let count = 0;
+  for (let i = 0; i < rows.length; i++) {
+      let cells = rows[i].children;
+      let full = true;
+      for (let j = 0; j < cells.length; j++) {
+          if (!cells[j].classList.contains('taken')) {
+              full = false;
+              break;
+          }
+      }
+      if (full) {
+          count++;
+          for (let k = 0; k < cells.length; k++) {
+              cells[k].classList.remove('taken');
+          }
+          grid.removeChild(rows[i]);
+          let row = document.createElement('div');
+          row.className = 'row';
+          row.id = `row-${i}`;
+          for (let l = 0; l < width; l++) {
+              let cell = document.createElement('div');
+              cell.className = 'cell';
+              cell.id = `cell-${i}-${l}`;
+              row.appendChild(cell);
+          }
+          grid.insertBefore(row, rows[0]);
+      }
+  }
+  if (count > 0) {
+      score += (count * 10);
+      updateScore();
+      // lines += count;
+      // updateLines();
+  }
+}
+
+function updateScore() {
+  scoreElement.innerHTML = score;
+}
+
+// Buttons 
+const startButton = getElement('start');
+const pauseButton = getElement('pause');
+const resetButton = getElement('reset');
+
+// Game functions
+let gameOver = false;
+let gamePaused = false;
+let gameStarted = false;
+let gameInterval;
+let score = 0;
+// TETRIS
+
+
+startButton.addEventListener('click', () => {
+  if (!gameStarted) {
+      gameStarted = true;
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowLeft") {
+          movePieceLeft(currentPiece);
+        } else if (event.key === "ArrowRight") {
+          movePieceRight(currentPiece);
+        } else if (event.key === "ArrowUp") {
+          rotatePiece(currentPiece);
+        } else if (event.key === "ArrowDown") {
+          movePieceDown(currentPiece);
+          // console.log(checkCollision(currentPiece));
+        }
+      });
+      console.log('game started', gameStarted);
+      let currentPiece = getNextPiece();
+      drawPiece(currentPiece);
+      let nextPiece = getNextPiece();
+      drawNextPiece(nextPiece);
+      gameInterval = setInterval(() => {
+          
+          restoreIdOrder();
+          
+
+          if (checkCollision(currentPiece)) {
+              currentPiece.placed = true;
+              currentPiece.shape.forEach((row, i) => {
+                  row.forEach((cell, j) => {
+                      if (cell === 1) {
+                          getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.remove('active-piece');
+                          getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.add('taken');
+                      }
+                  });
+              })
+              clearLines();
+              restoreIdOrder();
+              currentPiece = nextPiece;
+              undrawNextPiece(nextPiece);
+              nextPiece = getNextPiece();
+              drawNextPiece(nextPiece);          
+          }
+          movePieceDown(currentPiece);
+      }, 1000); 
+  }
+  
+});
+
+pauseButton.addEventListener('click', () => {
+  console.log('firing pause')
+  if(!gamePaused) {
+    gamePaused = true;
+    //remove enventListener not working for some reason
+    document.removeEventListener("keydown", function (event) {
+    
+      if (event.key === "ArrowLeft") {
+        movePieceLeft(currentPiece);
+      } else if (event.key === "ArrowRight") {
+        movePieceRight(currentPiece);
+      } else if (event.key === "ArrowUp") {
+        rotatePiece(currentPiece);
+      } else if (event.key === "ArrowDown") {
+        movePieceDown(currentPiece);
+      
+      }
+    });
+    console.log('game paused', gamePaused)
+    if(gameInterval) {
+      clearInterval(gameInterval)
+      gameInterval = null
+
+    } 
+    else  {
+    
+    }
+  }
+})
+  
+  // else if(gamePaused) {
+  //   // gameStarted = true;
+  //   document.addEventListener("keydown", function (event) {
+  //     if (event.key === "ArrowLeft") {
+  //       movePieceLeft(currentPiece);
+  //     } else if (event.key === "ArrowRight") {
+  //       movePieceRight(currentPiece);
+  //     } else if (event.key === "ArrowUp") {
+  //       rotatePiece(currentPiece);
+  //     } else if (event.key === "ArrowDown") {
+  //       movePieceDown(currentPiece);
+  //       // console.log(checkCollision(currentPiece));
+  //     }
+ 
+  //   });
+   
+   // this currentPiece thing has completely driven my around the bend....... How do I get the CURRENT piece and just pass it to the moveDown??
+
+
+    // let currentPiece = getNextPiece();
+    // drawPiece(currentPiece);
+    // let nextPiece = getNextPiece();
+    // drawNextPiece(nextPiece);
+    // gameInterval = setInterval(() => {
+        
+    //     restoreIdOrder();
+        
+
+        // if (checkCollision(currentPiece)) {
+        //     currentPiece.placed = true;
+        //     currentPiece.shape.forEach((row, i) => {
+        //         row.forEach((cell, j) => {
+        //             if (cell === 1) {
+        //                 getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.remove('active-piece');
+        //                 getElement(`cell-${currentPiece.row + i}-${currentPiece.col + j}`).classList.add('taken');
+        //             }
+        //         });
+        //     })
+        //     clearLines();
+        //     restoreIdOrder();
+        //     currentPiece = nextPiece;
+        //     undrawNextPiece(nextPiece);
+        //     nextPiece = getNextPiece();
+        //     drawNextPiece(nextPiece);          
+        // }
+//         movePieceDown(currentPiece);
+//     }, 1000); 
+
+//   }
+// })
+
+// function remakeGrid () {
+// for (let i = 0; i < height; i++) {
+//   const row = document.createElement('div');
+//   row.className = 'row';
+//   row.id = `row-${i}`;
+//   for (let j = 0; j < width; j++) {
+//       const cell = document.createElement('div');
+//       cell.className = 'cell';
+//       cell.id = `cell-${i}-${j}`;
+//       row.appendChild(cell);
+//   }
+//   grid.appendChild(row);
+// }}
+
+function resetScoreSpeed() {
+  scoreElement.innerHTML = 0;
+  speedElement.innerHTML = 0;
+  //interval needs to be reset
+}
+
+// function deleteRows () {
+// let r = document.querySelectorAll('.row')
+// for(i=0; i< r.length ; i ++) {
+//   r.removeChild(r.childnodes[i])
+// }
+// console.log(r)
+
+// console.log(r)
+// console.log(grid.children.length)
+// console.log(nextPieceGrid.children.length)
+// for( i =0 ; i < nextPieceGrid.length; i++) {
+//   nextPieceGrid[i].removeChild(row)
+// }
+// console.log(nextPieceGrid.children.length)
+// }
+// deleteRows()
+
+
+resetButton.addEventListener('click', function(event) {
+ 
+  resetScoreSpeed()
+// Is it not best to try to remove the child element that were added when you first drew the grid?
+
+  // remakeGrid()
+  
+} )
+
+
