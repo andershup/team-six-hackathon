@@ -205,7 +205,6 @@ function movePieceDown(piece) {
 
 
 function rotatePiece(piece) {
-    // if (piece && !piece.placed) {
     undrawPiece(piece);
     let width = piece.shape[0].length;
     let height = piece.shape.length;
@@ -227,24 +226,8 @@ function rotatePiece(piece) {
         piece.row--;
     }
     drawPiece(piece);
-    // }
 }
 
-// function isVacantLeft(piece) {
-//     if (piece && !piece.placed) {
-//         let col = piece.col;
-//         let height = piece.shape.length;
-//         for (let i = 0; i <= height; i++) {
-//             if (col > 0) {
-//                 if (getElement(`cell-${piece.row + i}-${col - 1}`).classList.contains('taken')) {
-//                     return false;
-//                 }
-//             }
-//         }
-//         return true;
-//     }
-//     return false;
-// }
 
 function isVacantLeft(piece) {
     let col = piece.col;
@@ -280,26 +263,7 @@ function isVacantRight(piece) {
     return true;
 }
 
-// function isVacantRight(piece) {
-//     if (piece && !piece.placed) {
-//         let width = piece.shape[0].length;
-//         let col = piece.col + width - 1;
-//         let height = piece.shape.length;
-//         for (let i = 0; i <= height; i++) {
-//           if (col < 9) {
-//             if (
-//               getElement(`cell-${piece.row + i}-${col + 1}`).classList.contains(
-//                 "taken"
-//               )
-//             ) {
-//               return false;
-//             }
-//           }
-//         }
-//         return true;
-//     }
-//     return false;
-// }
+
 
 function checkCollision(piece) {
     if (piece) {
@@ -406,7 +370,6 @@ function pieceControls(event) {
         rotatePiece(currentPiece);
     } else if (event.key === "ArrowDown") {
         movePieceDown(currentPiece);
-        // console.log(checkCollision(currentPiece));
     }
 }
 
@@ -430,9 +393,10 @@ let currentInterval = dropIntervals[level - 1];
 function runGame() {
     if (!gameStarted && !gameOver) {
       startButton.removeEventListener("click", runGame);
+      startButton.classList.add('btn-disabled');
+      startButton.classList.remove('btn-game');
       gameStarted = true;
       document.addEventListener("keydown", pieceControls);
-      console.log("game started", gameStarted);
       currentPiece = getNextPiece();
       drawPiece(currentPiece);
       nextPiece = getNextPiece();
@@ -504,14 +468,12 @@ function pauseGame() {
     if (gameStarted && !gamePaused) {
         gamePaused = true;
         clearInterval(gameInterval);
-        console.log("game paused", gamePaused);
         pauseButton.innerText = "Resume";
         currentPiece = currentPiece;
         document.removeEventListener("keydown", pieceControls);
         startButton.removeEventListener("click", runGame);
     } else if (gameStarted && gamePaused) {
         runGame();
-        console.log("game resumed");
     }
 }
 
@@ -529,11 +491,12 @@ function resetGame() {
     updateLevel();
     getElement('grid').innerHTML = '';
     getElement('next-piece').innerHTML = '';
-    console.log("game reset");
     document.removeEventListener("keydown", pieceControls);
     createGrids();
     pauseButton.innerText = "Pause";
     startButton.addEventListener("click", runGame);
+    startButton.classList.remove('btn-disabled');
+    startButton.classList.add('btn-game');
 }
 
 function checkGameOver(piece) {
@@ -544,9 +507,9 @@ function checkGameOver(piece) {
         currentPiece = null;
         nextPiece = null;
         clearInterval(gameInterval);
-        console.log("game over");
         pauseButton.innerText = "Pause";
         document.removeEventListener("keydown", pieceControls);
+        alert('GameOver!')
     }
 
 }
