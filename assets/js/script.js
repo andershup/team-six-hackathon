@@ -430,6 +430,8 @@ let currentInterval = dropIntervals[level - 1];
 function runGame() {
     if (!gameStarted && !gameOver) {
       startButton.removeEventListener("click", runGame);
+      startButton.classList.add('btn-disabled');
+      startButton.classList.remove('btn-game');
       gameStarted = true;
       document.addEventListener("keydown", pieceControls);
       console.log("game started", gameStarted);
@@ -534,6 +536,8 @@ function resetGame() {
     createGrids();
     pauseButton.innerText = "Pause";
     startButton.addEventListener("click", runGame);
+    startButton.classList.remove('btn-disabled');
+    startButton.classList.add('btn-game');
 }
 
 function checkGameOver(piece) {
