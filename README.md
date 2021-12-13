@@ -49,6 +49,15 @@ JavaScript - minor errors
 
 ![](images/jshint-validation.png)
 
+## Bugs 
+
+During creating this game, there were a few bugs that came up, and have been resolved. Some of them include:
+    - 'Start' and 'Pause' button were speeding up the game in the start
+    - The tetrimino shapes were dissapearing when touching the bottom of the cell, but still taking space since other shapes were falling onto them evidently
+    - 'Pause/ Resume' button would freeze on 'Resume' even if the game would be reseted, so there would be three buttons : start, resume, reset
+    - Once fallen to the last row, before touching the bottom, the tetrimino shape would not move or rotate at the 'last-minute-save' if player wanted to, but since we all love tetris, that is fixed
+    - 
+
 ## Deployment 
 
 - To be done
