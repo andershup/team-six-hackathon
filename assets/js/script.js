@@ -188,7 +188,7 @@ function movePieceDown(piece) {
 
 
 function rotatePiece(piece) {
-    if (piece && !piece.placed) {
+    // if (piece && !piece.placed) {
         undrawPiece(piece);
         let width = piece.shape[0].length;
         let height = piece.shape.length;
@@ -210,7 +210,7 @@ function rotatePiece(piece) {
             piece.row--;
         }
         drawPiece(piece);
-    }
+    // }
 }
 
 // function isVacantLeft(piece) {
@@ -499,7 +499,10 @@ function resetGame() {
     nextPiece = null;
     clearInterval(gameInterval);
     score = 0;
+    level = 1;
+    currentInterval = dropIntervals[level - 1];    
     updateScore();
+    updateLevel();
     getElement('grid').innerHTML = '';
     getElement('next-piece').innerHTML = '';
     console.log("game reset");
