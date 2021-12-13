@@ -82,11 +82,10 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 20px;
+    margin: 20px auto;
     width: 100%;
     align-items: center;
     position: relative;
-    right: 30px;
 }
 
 .dark-blue-box {
