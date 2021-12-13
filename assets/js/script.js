@@ -11,6 +11,7 @@ const width = 10;
 const height = 20;
 const nextPieceGrid = getElement('next-piece');
 const scoreElement = getElement('score');
+const levelElement = getElement('speed');
 const colorClasses = [
   "dark-blue-box",
   "blue-box",
@@ -20,6 +21,9 @@ const colorClasses = [
   "red-box",
 
 ];
+
+const dropIntervals = [800, 700, 600, 500, 400, 300, 250, 200, 150, 100];
+const maxLevel = 10;
 // create grid for tetris
 
 function createGrids() {
@@ -130,17 +134,20 @@ function drawNextPiece(piece) {
 }
 
 function undrawPiece(piece) {
-    let row = piece.row;
-    let col = piece.col;
-    let shape = piece.shape;
-    let color = piece.color;
-    for (let i = 0; i < shape.length; i++) {
-        for (let j = 0; j < shape[i].length; j++) {
-            if (shape[i][j] === 1) {
-                getElement(`cell-${row + i}-${col + j}`).classList.remove('active-piece');
-                getElement(`cell-${row + i}-${col + j}`).classList.remove(color);
+    if (piece) {
+        let row = piece.row;
+        let col = piece.col;
+        let shape = piece.shape;
+        let color = piece.color;
+        for (let i = 0; i < shape.length; i++) {
+            for (let j = 0; j < shape[i].length; j++) {
+                if (shape[i][j] === 1) {
+                    getElement(`cell-${row + i}-${col + j}`).classList.remove('active-piece');
+                    getElement(`cell-${row + i}-${col + j}`).classList.remove(color);
+                }
             }
         }
+
     }
 }
 
@@ -170,11 +177,13 @@ function movePieceRight(piece) {
 }
 
 function movePieceDown(piece) {
-    undrawPiece(piece);
-    if (piece.row + piece.shape.length < 20 && !checkCollision(piece)) {
-        piece.row++;
+    if (piece) {
+        undrawPiece(piece);
+        if (piece.row + piece.shape.length < 20 && !checkCollision(piece)) {
+            piece.row++;
+        }
+        drawPiece(piece);
     }
-    drawPiece(piece);
 }
 
 
@@ -276,25 +285,28 @@ function isVacantRight(piece) {
 // }
     
 function checkCollision(piece) {
-    let row = piece.row;
-    let col = piece.col;
-    let shape = piece.shape;
-    let width = piece.shape[0].length;
-    let height = piece.shape.length;
-    if (row + height >= 20) {
-        return true;
-    } else {
-        for (let i = 0; i < height; i++) {
-            for (let j = 0; j < width; j++) {
-                if (shape[i][j] === 1) {
-                    if (getElement(`cell-${row + i + 1}-${col + j}`).classList.contains('taken')) {
-                        return true;
+    if (piece) {
+
+        let row = piece.row;
+        let col = piece.col;
+        let shape = piece.shape;
+        let width = piece.shape[0].length;
+        let height = piece.shape.length;
+        if (row + height >= 20) {
+            return true;
+        } else {
+            for (let i = 0; i < height; i++) {
+                for (let j = 0; j < width; j++) {
+                    if (shape[i][j] === 1) {
+                        if (getElement(`cell-${row + i + 1}-${col + j}`).classList.contains('taken')) {
+                            return true;
+                        }
                     }
                 }
             }
         }
+        return false;
     }
-    return false;
 }
 
 function restoreIdOrder() {
@@ -348,6 +360,21 @@ function updateScore() {
     scoreElement.innerHTML = score;
 }
 
+function updateLevel() {
+    levelElement.innerHTML = level;
+}
+
+function incrementDifficulty() {
+    level = Math.floor(score / 50);
+    if (level < maxLevel) {
+        level++;
+        updateLevel();
+        clearInterval(gameInterval);
+        currentInterval = dropIntervals[level - 1];
+        runGame();
+    }
+}
+
 function pieceControls(event) {    
         if (event.key === "ArrowLeft") {
           movePieceLeft(currentPiece);
@@ -374,10 +401,12 @@ let gameInterval;
 let currentPiece;
 let nextPiece;
 let score = 0;
+let level = 1;
+let currentInterval = dropIntervals[level - 1];
 // TETRIS
 
 function runGame() {
-    if (!gameStarted) {
+    if (!gameStarted && !gameOver) {
       gameStarted = true;
       document.addEventListener("keydown", pieceControls);
       console.log("game started", gameStarted);
@@ -388,6 +417,7 @@ function runGame() {
       gameInterval = setInterval(() => {
         restoreIdOrder();
         checkGameOver(currentPiece);
+        incrementDifficulty();
 
         if (checkCollision(currentPiece)) {
           currentPiece.placed = true;
@@ -411,13 +441,15 @@ function runGame() {
           drawNextPiece(nextPiece);
         }
         movePieceDown(currentPiece);
-      }, 500);
-    } else {
+      }, currentInterval);
+    } else if (!gameOver){
         gamePaused = false;
         pauseButton.innerText = "Pause";
         document.addEventListener("keydown", pieceControls);
         gameInterval = setInterval(() => {
           restoreIdOrder();
+          checkGameOver(currentPiece);
+          incrementDifficulty();
 
           if (checkCollision(currentPiece)) {
             currentPiece.placed = true;
@@ -441,7 +473,7 @@ function runGame() {
             drawNextPiece(nextPiece);
           }
           movePieceDown(currentPiece);
-        }, 500);
+        }, currentInterval);
     }
 }
 
