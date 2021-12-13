@@ -15,8 +15,8 @@ This game is to entertain the user and making a nice holiday mood while playing 
 
 ## Building
 
-The JavaScript code for functionality of this game was primarily made by Alex Konolov, from scratch, with help of Anders Olesen, team lead.
-CSS and HTML code was created by all four members of the 'Team-six' to put together this final product for Hackathon, December, 2021
+The JavaScript code for functionality of this game was primarily made by Alexei Konovalov, from scratch, with help of Anders Olesen, team lead.
+CSS and HTML code was created by all four members of the 'Team Tetris', to put together this final product for Code Institute Hackathon, December, 2021
 
 
 ### Programs Used
@@ -60,4 +60,3 @@ JavaScript - minor errors
 - The footer snow is found on this [link](https://files.slack.com/files-pri/T0L30B202-F02Q01R7N8P/realistic-snowdrift-isolated_160081-9.jpg).
 - The effect of snow falling is found on [Code Pen](https://codepen.io/) and the code for snowflakes is [here](https://codepen.io/codeconvey/pen/xRzQay).
 
-- 
