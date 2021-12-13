@@ -6,6 +6,10 @@ function getElements(className) {
     return document.getElementsByClassName(className);
 }
 
+const fireworksContainer = getElement('fireworks');
+const fireworks = new Fireworks(fireworksContainer);
+fireworks.setOptions({delay: {min: 0, max: 15}, particles: 200, explosion: 10, speed: 400, acceleration: 3000});
+
 const grid = getElement('grid');
 const width = 10;
 const height = 20;
@@ -352,6 +356,11 @@ function clearLines() {
     }
     if (count > 0) {
         score += (count * 10);
+        fireworks.start();
+        setTimeout(() => {
+            fireworks.stop();
+        }, 1200);
+
         updateScore();
     }
 }
