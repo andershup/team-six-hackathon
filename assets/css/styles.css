@@ -25,8 +25,8 @@ body {
     display: table-cell;
     vertical-align: middle;
     text-align: center;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     background-color: transparent;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 5px;
