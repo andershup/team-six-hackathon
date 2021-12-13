@@ -15,7 +15,7 @@ body {
     font-weight: bolder;
     object-fit: scale-down;
     height: 100vh;
-    max-height: 100vh;
+    /* max-height: 100vh; */
     position: relative;
 }
 
@@ -45,7 +45,7 @@ body {
     justify-content: center;
     align-content: center;
     width: fit-content;
-    margin: 100px auto;
+    margin: 40px auto;
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
