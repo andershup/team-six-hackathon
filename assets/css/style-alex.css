@@ -382,7 +382,7 @@ body {
 
 footer {
     width: 100%;
-    height: 100%;
+    height: 250px;
     position: absolute;
     background-image: url("../images/snowpile3.svg");
     background-repeat: no-repeat;
@@ -390,5 +390,4 @@ footer {
     background-position: center;
     background-attachment: fixed;
     bottom: 0;
-    z-index: -1;
 }
