@@ -79,10 +79,6 @@ body {
     cursor: pointer;
 }
 
-.active-piece {
-    /* background-color: red; */
-}
-
 .test1-red {
     background-color: red;
 }

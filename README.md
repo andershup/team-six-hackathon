@@ -9,21 +9,23 @@
 
 -- do we need user stories? ask the team :)
 
-# Building
+## Building
 
-## Programs, libraries, modules, frameworks used
+### Programs, libraries, modules, frameworks used
 
 - Description of the steps made to create this game
 - List programs used
 
-# Instructions
+## Instructions
 
 - How to play, steps, options
 
-# Deployment 
+## Deployment 
 
 - check with team if we want to include this section
 
-# Creators of this game with maybe links to each git repo's
+## Creators of this game with links to each git repo's
 
-- check with team about this
+## Resources
+
+The links to helpful material from other coders
