@@ -204,42 +204,76 @@ function rotatePiece(piece) {
     }
 }
 
+// function isVacantLeft(piece) {
+//     if (piece && !piece.placed) {
+//         let col = piece.col;
+//         let height = piece.shape.length;
+//         for (let i = 0; i <= height; i++) {
+//             if (col > 0) {
+//                 if (getElement(`cell-${piece.row + i}-${col - 1}`).classList.contains('taken')) {
+//                     return false;
+//                 }
+//             }
+//         }
+//         return true;
+//     }
+//     return false;
+// }
+
 function isVacantLeft(piece) {
-    if (piece && !piece.placed) {
-        let col = piece.col;
-        let height = piece.shape.length;
-        for (let i = 0; i <= height; i++) {
+    let col = piece.col;
+    let row = piece.row;
+    let height = piece.shape.length;
+    let width = piece.shape[0].length;
+    for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
             if (col > 0) {
-                if (getElement(`cell-${piece.row + i}-${col - 1}`).classList.contains('taken')) {
+                if (piece.shape[i][j] === 1 && getElement(`cell-${row + i}-${col - 1}`).classList.contains('taken')) {
                     return false;
                 }
             }
         }
-        return true;
     }
-    return false;
+    return true;
 }
 
 function isVacantRight(piece) {
-    if (piece && !piece.placed) {
-        let width = piece.shape[0].length;
-        let col = piece.col + width - 1;
-        let height = piece.shape.length;
-        for (let i = 0; i <= height; i++) {
-          if (col < 9) {
-            if (
-              getElement(`cell-${piece.row + i}-${col + 1}`).classList.contains(
-                "taken"
-              )
-            ) {
-              return false;
+    let col = piece.col;
+    let row = piece.row;
+    let height = piece.shape.length;
+    let width = piece.shape[0].length;
+    for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+            if (col + width < 10) {
+                if (piece.shape[i][j] === 1 && getElement(`cell-${row + i}-${col + width}`).classList.contains('taken')) {
+                    return false;
+                }
             }
-          }
         }
-        return true;
     }
-    return false;
+    return true;
 }
+
+// function isVacantRight(piece) {
+//     if (piece && !piece.placed) {
+//         let width = piece.shape[0].length;
+//         let col = piece.col + width - 1;
+//         let height = piece.shape.length;
+//         for (let i = 0; i <= height; i++) {
+//           if (col < 9) {
+//             if (
+//               getElement(`cell-${piece.row + i}-${col + 1}`).classList.contains(
+//                 "taken"
+//               )
+//             ) {
+//               return false;
+//             }
+//           }
+//         }
+//         return true;
+//     }
+//     return false;
+// }
     
 function checkCollision(piece) {
     let row = piece.row;
