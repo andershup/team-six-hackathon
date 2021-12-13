@@ -378,7 +378,7 @@ function runGame() {
         }
         movePieceDown(currentPiece);
       }, 500);
-    } else {
+    } else if (gamePaused) {
         gameInterval = setInterval(() => {
           restoreIdOrder();
 
@@ -439,6 +439,7 @@ function resetGame() {
     console.log("game reset");
     document.removeEventListener("keydown", pieceControls);
     createGrids();
+    pauseButton.innerText = "Pause";
 }
 
 function checkGameOver(piece) {
