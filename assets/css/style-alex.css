@@ -7,7 +7,7 @@
 
 body {
     background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url(../images/santa-lights-night.jpeg);
+        url(../images/santa-lights-night.jpeg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

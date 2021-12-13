@@ -1,3 +1,14 @@
+// this code is using ECMAScript 6 to validate with JShint
+
+/*jshint esversion: 6 */
+
+const Suites = {
+    Spade: 1,
+    Heart: 2,
+    Diamond: 3,
+    Club: 4
+};
+
 function getElement(id) {
     return document.getElementById(id);
 }
@@ -8,7 +19,16 @@ function getElements(className) {
 
 const fireworksContainer = getElement('fireworks');
 const fireworks = new Fireworks(fireworksContainer);
-fireworks.setOptions({delay: {min: 0, max: 15}, particles: 200, explosion: 10, speed: 400, acceleration: 3000});
+fireworks.setOptions({
+    delay: {
+        min: 0,
+        max: 15
+    },
+    particles: 200,
+    explosion: 10,
+    speed: 400,
+    acceleration: 3000
+});
 
 const grid = getElement('grid');
 const width = 10;
@@ -17,12 +37,12 @@ const nextPieceGrid = getElement('next-piece');
 const scoreElement = getElement('score');
 const levelElement = getElement('speed');
 const colorClasses = [
-  "dark-blue-box",
-  "blue-box",
-  "green-box",
-  "orange-box",
-  "purple-box",
-  "red-box",
+    "dark-blue-box",
+    "blue-box",
+    "green-box",
+    "orange-box",
+    "purple-box",
+    "red-box",
 
 ];
 
@@ -116,7 +136,7 @@ function drawPiece(piece) {
         for (let j = 0; j < shape[i].length; j++) {
             if (shape[i][j] === 1) {
                 getElement(`cell-${row + i}-${col + j}`).classList.add('active-piece');
-                getElement(`cell-${row + i}-${col + j}`).classList.add(color);          
+                getElement(`cell-${row + i}-${col + j}`).classList.add(color);
             }
         }
     }
@@ -193,27 +213,27 @@ function movePieceDown(piece) {
 
 function rotatePiece(piece) {
     // if (piece && !piece.placed) {
-        undrawPiece(piece);
-        let width = piece.shape[0].length;
-        let height = piece.shape.length;
-        let temp = [];
-        for (let i = 0; i < width; i++) {
-            temp[i] = [];
-            for (let j = 0; j < height; j++) {
-                temp[i][j] = piece.shape[height - 1 - j][i];
-            }
+    undrawPiece(piece);
+    let width = piece.shape[0].length;
+    let height = piece.shape.length;
+    let temp = [];
+    for (let i = 0; i < width; i++) {
+        temp[i] = [];
+        for (let j = 0; j < height; j++) {
+            temp[i][j] = piece.shape[height - 1 - j][i];
         }
-        piece.shape = temp;
-        while (piece.col + piece.shape[0].length > 9 || !isVacantRight(piece)) {
-            piece.col--;
-        }
-        while (piece.col < 0 || !isVacantLeft(piece)) {
-            piece.col++;
-        }
-        while (piece.row + piece.shape.length > 20 || checkCollision(piece)) {
-            piece.row--;
-        }
-        drawPiece(piece);
+    }
+    piece.shape = temp;
+    while (piece.col + piece.shape[0].length > 9 || !isVacantRight(piece)) {
+        piece.col--;
+    }
+    while (piece.col < 0 || !isVacantLeft(piece)) {
+        piece.col++;
+    }
+    while (piece.row + piece.shape.length > 20 || checkCollision(piece)) {
+        piece.row--;
+    }
+    drawPiece(piece);
     // }
 }
 
@@ -287,7 +307,7 @@ function isVacantRight(piece) {
 //     }
 //     return false;
 // }
-    
+
 function checkCollision(piece) {
     if (piece) {
 
@@ -384,17 +404,17 @@ function incrementDifficulty() {
     }
 }
 
-function pieceControls(event) {    
-        if (event.key === "ArrowLeft") {
-          movePieceLeft(currentPiece);
-        } else if (event.key === "ArrowRight") {
-          movePieceRight(currentPiece);
-        } else if (event.key === "ArrowUp") {
-          rotatePiece(currentPiece);
-        } else if (event.key === "ArrowDown") {
-          movePieceDown(currentPiece);
-          // console.log(checkCollision(currentPiece));
-        }      
+function pieceControls(event) {
+    if (event.key === "ArrowLeft") {
+        movePieceLeft(currentPiece);
+    } else if (event.key === "ArrowRight") {
+        movePieceRight(currentPiece);
+    } else if (event.key === "ArrowUp") {
+        rotatePiece(currentPiece);
+    } else if (event.key === "ArrowDown") {
+        movePieceDown(currentPiece);
+        // console.log(checkCollision(currentPiece));
+    }
 }
 
 // Buttons 
@@ -416,72 +436,72 @@ let currentInterval = dropIntervals[level - 1];
 
 function runGame() {
     if (!gameStarted && !gameOver) {
-      gameStarted = true;
-      document.addEventListener("keydown", pieceControls);
-      console.log("game started", gameStarted);
-      currentPiece = getNextPiece();
-      drawPiece(currentPiece);
-      nextPiece = getNextPiece();
-      drawNextPiece(nextPiece);
-      gameInterval = setInterval(() => {
-        restoreIdOrder();
-        checkGameOver(currentPiece);
-        incrementDifficulty();
+        gameStarted = true;
+        document.addEventListener("keydown", pieceControls);
+        console.log("game started", gameStarted);
+        currentPiece = getNextPiece();
+        drawPiece(currentPiece);
+        nextPiece = getNextPiece();
+        drawNextPiece(nextPiece);
+        gameInterval = setInterval(() => {
+            restoreIdOrder();
+            checkGameOver(currentPiece);
+            incrementDifficulty();
 
-        if (checkCollision(currentPiece)) {
-          currentPiece.placed = true;
-          currentPiece.shape.forEach((row, i) => {
-            row.forEach((cell, j) => {
-              if (cell === 1) {
-                getElement(
-                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
-                ).classList.remove("active-piece");
-                getElement(
-                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
-                ).classList.add("taken");
-              }
-            });
-          });
-          clearLines();
-          restoreIdOrder();
-          currentPiece = nextPiece;
-          undrawNextPiece(nextPiece);
-          nextPiece = getNextPiece();
-          drawNextPiece(nextPiece);
-        }
-        movePieceDown(currentPiece);
-      }, currentInterval);
-    } else if (!gameOver){
+            if (checkCollision(currentPiece)) {
+                currentPiece.placed = true;
+                currentPiece.shape.forEach((row, i) => {
+                    row.forEach((cell, j) => {
+                        if (cell === 1) {
+                            getElement(
+                                `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                            ).classList.remove("active-piece");
+                            getElement(
+                                `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                            ).classList.add("taken");
+                        }
+                    });
+                });
+                clearLines();
+                restoreIdOrder();
+                currentPiece = nextPiece;
+                undrawNextPiece(nextPiece);
+                nextPiece = getNextPiece();
+                drawNextPiece(nextPiece);
+            }
+            movePieceDown(currentPiece);
+        }, currentInterval);
+    } else if (!gameOver) {
         gamePaused = false;
         pauseButton.innerText = "Pause";
         document.addEventListener("keydown", pieceControls);
         gameInterval = setInterval(() => {
-          restoreIdOrder();
-          checkGameOver(currentPiece);
-          incrementDifficulty();
-
-          if (checkCollision(currentPiece)) {
-            currentPiece.placed = true;
-            currentPiece.shape.forEach((row, i) => {
-              row.forEach((cell, j) => {
-                if (cell === 1) {
-                  getElement(
-                    `cell-${currentPiece.row + i}-${currentPiece.col + j}`
-                  ).classList.remove("active-piece");
-                  getElement(
-                    `cell-${currentPiece.row + i}-${currentPiece.col + j}`
-                  ).classList.add("taken");
-                }
-              });
-            });
-            clearLines();
             restoreIdOrder();
-            currentPiece = nextPiece;
-            undrawNextPiece(nextPiece);
-            nextPiece = getNextPiece();
-            drawNextPiece(nextPiece);
-          }
-          movePieceDown(currentPiece);
+            //   checkGameOver(currentPiece);
+            incrementDifficulty();
+
+            if (checkCollision(currentPiece)) {
+                currentPiece.placed = true;
+                currentPiece.shape.forEach((row, i) => {
+                    row.forEach((cell, j) => {
+                        if (cell === 1) {
+                            getElement(
+                                `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                            ).classList.remove("active-piece");
+                            getElement(
+                                `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                            ).classList.add("taken");
+                        }
+                    });
+                });
+                clearLines();
+                restoreIdOrder();
+                currentPiece = nextPiece;
+                undrawNextPiece(nextPiece);
+                nextPiece = getNextPiece();
+                drawNextPiece(nextPiece);
+            }
+            movePieceDown(currentPiece);
         }, currentInterval);
     }
 }
@@ -509,7 +529,7 @@ function resetGame() {
     clearInterval(gameInterval);
     score = 0;
     level = 1;
-    currentInterval = dropIntervals[level - 1];    
+    currentInterval = dropIntervals[level - 1];
     updateScore();
     updateLevel();
     getElement('grid').innerHTML = '';
@@ -521,7 +541,7 @@ function resetGame() {
 }
 
 function checkGameOver(piece) {
-    if(piece.row === 0 && checkCollision(piece)) {
+    if (piece.row === 0 && checkCollision(piece)) {
         gameOver = true;
         gameStarted = false;
         gamePaused = false;

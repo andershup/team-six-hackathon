@@ -1,5 +1,10 @@
 # Tetris Game Holiday Theme
-- brief description, image of finished game
+
+This game is to entertain the user and making a nice holiday mood while playing the only game that has been in outer space according to these interesting [facts](https://www.dailydot.com/parsec/tetris-game-facts/)
+
+The image of the finished game 
+
+![](images/finished.png)
 
 ## Wireframe
 
@@ -7,7 +12,6 @@
 
 ![](images/wireframe-tetris.png)
 
--- do we need user stories? ask the team :)
 
 ## Building
 
