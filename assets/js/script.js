@@ -517,8 +517,7 @@ function checkGameOver(piece) {
         nextPiece = null;
         clearInterval(gameInterval);
         console.log("game over");
-        pauseButton.innerText = "Start";
-        resetButton.innerText = "Reset";
+        pauseButton.innerText = "Pause";
         document.removeEventListener("keydown", pieceControls);
     }
 
