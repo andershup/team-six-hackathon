@@ -2,13 +2,6 @@
 
 /*jshint esversion: 6 */
 
-const Suites = {
-    Spade: 1,
-    Heart: 2,
-    Diamond: 3,
-    Club: 4
-};
-
 function getElement(id) {
     return document.getElementById(id);
 }
@@ -436,73 +429,74 @@ let currentInterval = dropIntervals[level - 1];
 
 function runGame() {
     if (!gameStarted && !gameOver) {
-        gameStarted = true;
-        document.addEventListener("keydown", pieceControls);
-        console.log("game started", gameStarted);
-        currentPiece = getNextPiece();
-        drawPiece(currentPiece);
-        nextPiece = getNextPiece();
-        drawNextPiece(nextPiece);
-        gameInterval = setInterval(() => {
-            restoreIdOrder();
-            checkGameOver(currentPiece);
-            incrementDifficulty();
+      startButton.removeEventListener("click", runGame);
+      gameStarted = true;
+      document.addEventListener("keydown", pieceControls);
+      console.log("game started", gameStarted);
+      currentPiece = getNextPiece();
+      drawPiece(currentPiece);
+      nextPiece = getNextPiece();
+      drawNextPiece(nextPiece);
+      gameInterval = setInterval(() => {
+        restoreIdOrder();
+        checkGameOver(currentPiece);
+        incrementDifficulty();
 
-            if (checkCollision(currentPiece)) {
-                currentPiece.placed = true;
-                currentPiece.shape.forEach((row, i) => {
-                    row.forEach((cell, j) => {
-                        if (cell === 1) {
-                            getElement(
-                                `cell-${currentPiece.row + i}-${currentPiece.col + j}`
-                            ).classList.remove("active-piece");
-                            getElement(
-                                `cell-${currentPiece.row + i}-${currentPiece.col + j}`
-                            ).classList.add("taken");
-                        }
-                    });
-                });
-                clearLines();
-                restoreIdOrder();
-                currentPiece = nextPiece;
-                undrawNextPiece(nextPiece);
-                nextPiece = getNextPiece();
-                drawNextPiece(nextPiece);
-            }
-            movePieceDown(currentPiece);
-        }, currentInterval);
-    } else if (!gameOver) {
-        gamePaused = false;
-        pauseButton.innerText = "Pause";
-        document.addEventListener("keydown", pieceControls);
-        gameInterval = setInterval(() => {
-            restoreIdOrder();
-            //   checkGameOver(currentPiece);
-            incrementDifficulty();
+        if (checkCollision(currentPiece)) {
+          currentPiece.placed = true;
+          currentPiece.shape.forEach((row, i) => {
+            row.forEach((cell, j) => {
+              if (cell === 1) {
+                getElement(
+                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                ).classList.remove("active-piece");
+                getElement(
+                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                ).classList.add("taken");
+              }
+            });
+          });
+          clearLines();
+          restoreIdOrder();
+          currentPiece = nextPiece;
+          undrawNextPiece(nextPiece);
+          nextPiece = getNextPiece();
+          drawNextPiece(nextPiece);
+        }
+        movePieceDown(currentPiece);
+      }, currentInterval);
+    } else if (gameStarted && !gameOver) {
+      gamePaused = false;
+      pauseButton.innerText = "Pause";
+      document.addEventListener("keydown", pieceControls);
+      gameInterval = setInterval(() => {
+        restoreIdOrder();
+        checkGameOver(currentPiece);
+        incrementDifficulty();
 
-            if (checkCollision(currentPiece)) {
-                currentPiece.placed = true;
-                currentPiece.shape.forEach((row, i) => {
-                    row.forEach((cell, j) => {
-                        if (cell === 1) {
-                            getElement(
-                                `cell-${currentPiece.row + i}-${currentPiece.col + j}`
-                            ).classList.remove("active-piece");
-                            getElement(
-                                `cell-${currentPiece.row + i}-${currentPiece.col + j}`
-                            ).classList.add("taken");
-                        }
-                    });
-                });
-                clearLines();
-                restoreIdOrder();
-                currentPiece = nextPiece;
-                undrawNextPiece(nextPiece);
-                nextPiece = getNextPiece();
-                drawNextPiece(nextPiece);
-            }
-            movePieceDown(currentPiece);
-        }, currentInterval);
+        if (checkCollision(currentPiece)) {
+          currentPiece.placed = true;
+          currentPiece.shape.forEach((row, i) => {
+            row.forEach((cell, j) => {
+              if (cell === 1) {
+                getElement(
+                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                ).classList.remove("active-piece");
+                getElement(
+                  `cell-${currentPiece.row + i}-${currentPiece.col + j}`
+                ).classList.add("taken");
+              }
+            });
+          });
+          clearLines();
+          restoreIdOrder();
+          currentPiece = nextPiece;
+          undrawNextPiece(nextPiece);
+          nextPiece = getNextPiece();
+          drawNextPiece(nextPiece);
+        }
+        movePieceDown(currentPiece);
+      }, currentInterval);
     }
 }
 
@@ -514,6 +508,7 @@ function pauseGame() {
         pauseButton.innerText = "Resume";
         currentPiece = currentPiece;
         document.removeEventListener("keydown", pieceControls);
+        startButton.removeEventListener("click", runGame);
     } else if (gameStarted && gamePaused) {
         runGame();
         console.log("game resumed");
@@ -538,6 +533,7 @@ function resetGame() {
     document.removeEventListener("keydown", pieceControls);
     createGrids();
     pauseButton.innerText = "Pause";
+    startButton.addEventListener("click", runGame);
 }
 
 function checkGameOver(piece) {
