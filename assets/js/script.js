@@ -378,7 +378,10 @@ function runGame() {
         }
         movePieceDown(currentPiece);
       }, 500);
-    } else if (gamePaused) {
+    } else {
+        gamePaused = false;
+        pauseButton.innerText = "Pause";
+        document.addEventListener("keydown", pieceControls);
         gameInterval = setInterval(() => {
           restoreIdOrder();
 
@@ -416,12 +419,9 @@ function pauseGame() {
         pauseButton.innerText = "Resume";
         currentPiece = currentPiece;
         document.removeEventListener("keydown", pieceControls);
-    } else {
-        gamePaused = false;
+    } else if (gameStarted && gamePaused) {
         runGame();
         console.log("game resumed");
-        pauseButton.innerText = "Pause";
-        document.addEventListener("keydown", pieceControls);
     }
 }
 
