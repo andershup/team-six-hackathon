@@ -416,6 +416,7 @@ let currentInterval = dropIntervals[level - 1];
 
 function runGame() {
     if (!gameStarted && !gameOver) {
+      startButton.removeEventListener("click", runGame);
       gameStarted = true;
       document.addEventListener("keydown", pieceControls);
       console.log("game started", gameStarted);
@@ -451,7 +452,7 @@ function runGame() {
         }
         movePieceDown(currentPiece);
       }, currentInterval);
-    } else if (!gameOver){
+    } else if (gameStarted && !gameOver){
         gamePaused = false;
         pauseButton.innerText = "Pause";
         document.addEventListener("keydown", pieceControls);
@@ -494,6 +495,7 @@ function pauseGame() {
         pauseButton.innerText = "Resume";
         currentPiece = currentPiece;
         document.removeEventListener("keydown", pieceControls);
+        startButton.removeEventListener("click", runGame);
     } else if (gameStarted && gamePaused) {
         runGame();
         console.log("game resumed");
@@ -518,6 +520,7 @@ function resetGame() {
     document.removeEventListener("keydown", pieceControls);
     createGrids();
     pauseButton.innerText = "Pause";
+    startButton.addEventListener("click", runGame);
 }
 
 function checkGameOver(piece) {
