@@ -8,9 +8,7 @@ The image of the finished game
 
 ## Wireframe
 
-- Original idea
-
-![](images/wireframe-tetris.png)
+## Live link: https://andershup.github.io/team-six-hackathon/
 
 
 ## Building
